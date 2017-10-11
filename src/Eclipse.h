@@ -18,7 +18,7 @@ class Eclipse
 	 * @param eclipseData the data to output
 	 * @return an ostream to output through cout
 	 */
-	friend std::ostream&operator<<(std::ostream& os, Eclipse eclipseData);
+	friend std::ostream&operator<<(std::ostream& os, Eclipse eclipse);
 
 	public:
 		/**
@@ -45,58 +45,69 @@ class Eclipse
 		 * @param eclipseData the other object
 		 * @return true if equal, false if not equal
 		 */
-		bool Equals(Eclipse eclipseData);
+		bool equals(Eclipse eclipseData);
 
 		/**
 		 * Retrieves the catalog number of this eclipse
 		 * @return catalog number
 		 */
-		std::string GetCatalogNum() const;
+		std::string getCatalogNum() const;
 
 		/**
 		 * Sets the catalog number of this eclipse
 		 * @param catalogNum the catalog number to set
 		 */
-		void SetCatalogNum(std::string catalogNum);
+		void setCatalogNum(std::string catalogNum);
 
 		/**
 		 * Gets a specific cell from this eclipse
 		 * @param index the column (0 indexed) to get the data from
 		 * @return the desired cell data
 		 */
-		std::string GetCell(int index) const;
+		std::string getCell(int index) const;
 
 		/**
 		 * Adds a cell to the EclipseData
 		 * @param cell the string data to add
 		 * @param index the column (0 indexed) to add it to
 		 */
-		void AddCell(std::string cell, int index);
+		void addCell(std::string cell, int index);
 
 		/**
 		 * Gets the type of the eclipse
 		 * @return the type of eclipse this is
 		 */
-		std::string GetEclipseType() const;
+		std::string getEclipseType() const;
 
 		/**
 		 * Sets the eclipse type
 		 * @param eclipseType the new eclipse type
 		 */
-		void SetEclipseType(std::string eclipseType);
+		void setEclipseType(std::string eclipseType);
 
 		/**
 		 * Gets the number of columns in the cells array
 		 * @return number of columns in the cells array
 		 */
-		int GetNumColumns() const;
+		int getNumColumns() const;
 
 		/**
 		 * Sets how many columns there are
 		 * @param numColumns the number of columns there are
 		 */
-		void SetNumColumns(int numColumns);
+		void setNumColumns(int numColumns);
 
+		/**
+		 *
+		 * @param rawInput
+		 */
+		void setRawInput(std::string rawInput);
+
+		/**
+		 *
+		 * @return
+		 */
+		std::string getRawInput();
 
 	private:
 
@@ -114,6 +125,11 @@ class Eclipse
 		 * The raw data
 		 */
 		std::string cells[24];
+
+		/**
+		 * How this eclipse appears in the file
+		 */
+		std::string rawInput;
 
 		/**
 		 * Number of columns in the raw data

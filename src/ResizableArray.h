@@ -41,6 +41,7 @@ class ResizableArray {
 			this->resizableArray = new T[10];
 			this->arraySize = 10;
 			this->numElements = 0;
+			this->numValidElementsRead = 0;
 		}
 
 		/**
@@ -53,6 +54,7 @@ class ResizableArray {
 			this->resizableArray = new T[size];
 			this->arraySize = size;
 			this->numElements = 0;
+			this->numValidElementsRead = 0;
 		}
 
 		/**
@@ -64,6 +66,7 @@ class ResizableArray {
 			this->resizableArray = arr.resizableArray;
 			this->arraySize = arr.arraySize;
 			this->numElements = arr.numElements;
+			this->numValidElementsRead = arr.numValidElementsRead;
 		}
 
 		/**
@@ -82,7 +85,7 @@ class ResizableArray {
 		 * @param index index to get element at
 		 * @return An EclipseData object
 		 */
-		T& Get(int index)
+		T& get(int index)
 		{
 			if(index > this->numElements || index < 0)
 			{
@@ -96,7 +99,7 @@ class ResizableArray {
 		 * Gets the number of elements in the dynamic array
 		 * @return the number of elements in the dynamic array
 		 */
-		int GetNumElements()
+		int getNumElements()
 		{
 			return numElements;
 		}
@@ -114,7 +117,7 @@ class ResizableArray {
 		 * Adds an element to the array
 		 * @param eclipseData the element to add
 		 */
-		void Add(T t)
+		void add(T t)
 		{
 			//IF the next element puts us over allocation, add more memory to the array
 			if((numElements + 1) >= this->arraySize)
@@ -134,7 +137,7 @@ class ResizableArray {
 		 * @param t
 		 * @param index
 		 */
-		void AddAt(T t, int index)
+		void addAt(T t, int index)
 		{
 			if(index > this->numElements || index < 0)
 			{
@@ -157,7 +160,7 @@ class ResizableArray {
 			++numElements;
 		}
 
-		void ReplaceAt(T t, int index)
+		void replaceAt(T t, int index)
 		{
 			if(index >= this->numElements || index < 0)
 			{
@@ -175,7 +178,7 @@ class ResizableArray {
 		 * Removes an element from the array
 		 * @param eclipseData the element to remove
 		 */
-		void RemoveAt(int index)
+		void removeAt(int index)
 		{
 			if(index >= this->numElements || index < 0)
 			{
@@ -197,6 +200,11 @@ class ResizableArray {
 					this->AllocateMemory(this->arraySize / 2);
 				}
 			}
+		}
+
+		void incrementValidCount()
+		{
+			this->numValidElementsRead++;
 		}
 
 		/**
@@ -222,6 +230,11 @@ class ResizableArray {
 		 * Number of elements in the array
 		 */
 		int numElements;
+
+		/**
+		 * The number of valid elements read into the array
+		 */
+		int numValidElementsRead;
 
 		/**
 		 * Give the array a new size

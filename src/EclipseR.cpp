@@ -8,6 +8,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <fstream>
 
 #include "EclipseR.h"
 #include "UnitTests.h"
@@ -20,11 +21,40 @@ int main()
 	//UNCOMMENT BELOW TO RUN UNIT TESTS HERE
 	//UnitTests unitTest;
 
-	//Count rows of data read to avoid header
-	int totalRows = 0;
-
 	//Create the array of Eclipse
 	ResizableArray<Eclipse> eclipseDataArray;
+
+	dataInputLoop(eclipseDataArray);
+
+	//Print eclipses in reverse order
+	cout << eclipseDataArray;
+
+	return 0;
+}
+
+void dataInputLoop(ResizableArray<Eclipse>& eclipseDataArray)
+{
+	string filename = " ";
+
+	while(filename != "")
+	{
+		cout << "Enter a data file name: ";
+		cin >> filename;
+
+		loadFile(eclipseDataArray, filename);
+	}
+}
+
+void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray)
+{
+
+}
+
+
+void loadFile(ResizableArray<Eclipse>& eclipseDataArray, string file)
+{
+	//Count rows of data read to avoid header
+	int totalRows = 0;
 
 	//string to keep the raw data for processing
 	string rawData;
@@ -39,7 +69,7 @@ int main()
 			if(rawData.length() > 0)
 			{
 				//Add data from this row to the array
-				ProcessRow(rawData, eclipseDataArray);
+				processRow(rawData, eclipseDataArray, totalRows);
 			}
 		}
 
@@ -47,17 +77,9 @@ int main()
 		++totalRows;
 	}
 
-	//Check for errors in each eclipse
-	CheckForErrors(eclipseDataArray);
-
-	//Print eclipses in reverse order
-	cout << eclipseDataArray;
-
-	return 0;
 }
 
-
-void ProcessRow(string rawData, ResizableArray<Eclipse> & eclipseDataArray)
+void processRow(string rawData, ResizableArray<Eclipse>& eclipseDataArray, int row)
 {
 	string cell = "";
 	char lastChar = ' ';
@@ -81,15 +103,15 @@ void ProcessRow(string rawData, ResizableArray<Eclipse> & eclipseDataArray)
 			//If column = 0, then check for catalog number uniqueness
 			if(col == 0)
 			{
-				eclipseData.SetCatalogNum(cell);
+				eclipseData.setCatalogNum(cell);
 			}
 			else if(col == 9) //If the column contains eclipse type, record it for later
 			{
-				eclipseData.SetEclipseType(cell);
+				eclipseData.setEclipseType(cell);
 			}
 
 			//Save the cells individually for later processing
-			eclipseData.AddCell(cell, col);
+			eclipseData.addCell(cell, col);
 
 			//Reset the cell string
 			cell = "";
@@ -105,39 +127,48 @@ void ProcessRow(string rawData, ResizableArray<Eclipse> & eclipseDataArray)
 	//Add the last column if there is no whitespace to indicate the end of a row
 	if(cell != "")
 	{
-		eclipseData.AddCell(cell, col);
+		eclipseData.addCell(cell, col);
 		++col;
 	}
 
 	//Set the number of columns in the eclipse
-	eclipseData.SetNumColumns(col);
+	eclipseData.setNumColumns(col);
+
+	if(isValid(eclipseData, row) == true)
+	{
+		eclipseDataArray.incrementValidCount();
+	}
+
+	int duplicateIndex = isNumberUnique(eclipseDataArray, eclipseData);
+
+	if(duplicateIndex != -1)
+	{
+		eclipseDataArray.removeAt(duplicateIndex);
+	}
 
 	//Add the processed eclipse to the array
-	eclipseDataArray.Add(eclipseData);
+	eclipseDataArray.add(eclipseData);
 }
 
 
-bool isNumberUnique(ResizableArray<Eclipse> eclipseDataArray, int index)
+int isNumberUnique(ResizableArray<Eclipse> eclipseDataArray, Eclipse eclipse)
 {
 	//Search through eclipses to see if any before this eclipse have the same catalog number
-	for(int k = 0; k < index; ++k)
+	for(int k = 0; k < eclipseDataArray.size(); ++k)
 	{
 		//Only consider it a duplicate if the catalog numbers are the same and the output is valid
-		if(eclipseDataArray.Get(k).GetCatalogNum() == eclipseDataArray.Get(index).GetCatalogNum())
+		if(eclipseDataArray.get(k).getCatalogNum() == eclipse.getCatalogNum())
 		{
-			return false;
+			return k;
 		}
 	}
 
-	return true;
+	return -1;
 }
 
 
-void CheckForErrors(ResizableArray<Eclipse> & eclipseDataArray)
+bool isValid(Eclipse eclipse, int dataRow)
 {
-	//Error flag to determine if CSV output is allowed for a certain row
-	bool errorFlag = false;
-
 	//Array of columns to check for whole numbers
 	const int wholeNumCols[10] = {1, 2, 3, 5, 7, 8, 9, 15, 16, 17};
 
@@ -146,99 +177,64 @@ void CheckForErrors(ResizableArray<Eclipse> & eclipseDataArray)
 
 	bool isValidNumber = true;
 
-	//Keep track of data row number
-	int dataRow = 1;
+	/* Check to see if eclipse type matches column numbers */
 
-	//Go through each eclipse and check for errors
-	for(int index = 0; index < eclipseDataArray.GetNumElements(); ++index)
+	//If an eclipse is partial, it should have exactly 16 columns
+	if(eclipse.getEclipseType()[0] == 'P' && eclipse.getNumColumns() != 16)
 	{
-		//Keep track of error status throughout error checking process
-		errorFlag = false;
+		cerr << "Error in data row " << dataRow << ": " << eclipse.getNumColumns() << " columns found. ";
+		cerr << "Should be 16.\n";
 
-		/* Check to see if eclipse type matches column numbers */
-
-		//If an eclipse is partial, it should have exactly 16 columns
-		if(eclipseDataArray.Get(index).GetEclipseType()[0] == 'P' && eclipseDataArray.Get(index).GetNumColumns() != 16)
-		{
-			cerr << "Error in data row " << dataRow << ": " << eclipseDataArray.Get(index).GetNumColumns() << " columns found. ";
-			cerr << "Should be 16.\n";
-
-			errorFlag = true;
-		}
-		//If an eclipse is not partial, it should have exactly 18 columns
-		else if(eclipseDataArray.Get(index).GetEclipseType()[0] != 'P' && eclipseDataArray.Get(index).GetNumColumns() != 18)
-		{
-			cerr << "Error in data row " << dataRow << ": " << eclipseDataArray.Get(index).GetNumColumns() << " columns found. ";
-			cerr << "Should be 18.\n";
-
-			errorFlag = true;
-		}
-
-		//Check for whole and decimal numbers in appropriate columns
-		if(!errorFlag)
-		{
-			//Check the first 7 applicable rows to see if they are whole numbers
-			for(int c = 0; c < 7; c++)
-			{
-				isValidNumber = isWholeNumber(eclipseDataArray.Get(index).GetCell(wholeNumCols[c] - 1));
-
-				if(!isValidNumber)
-				{
-					cerr << "Error in data row " << dataRow << ": Column " << wholeNumCols[c] << " is not a whole number.\n";
-					errorFlag = true;
-				}
-			}
-
-			//Check the two floating point columns
-			for(int c = 0; c < 2; c++)
-			{
-				isValidNumber = isDecimalNumber(eclipseDataArray.Get(index).GetCell(floatNumCols[c] - 1));
-
-				if(!isValidNumber)
-				{
-					cerr << "Error in data row " << dataRow << ": Column " << floatNumCols[c] << " is not a decimal number.\n";
-					errorFlag = true;
-				}
-			}
-
-			//Check the last 3 applicable columns for whole numbers
-			for(int c = 7; c < 10; c++)
-			{
-				isValidNumber = isWholeNumber(eclipseDataArray.Get(index).GetCell(wholeNumCols[c] - 1));
-
-				if(!isValidNumber)
-				{
-					cerr << "Error in data row " << dataRow << ": Column " << wholeNumCols[c] << " is not a whole number.\n";
-					errorFlag = true;
-				}
-			}
-		}
-
-		//If all other tests have passed, check for catalog number uniqueness
-		if(!errorFlag)
-		{
-			//Check to see if this catalog number is unique
-			errorFlag = !isNumberUnique(eclipseDataArray, index);
-
-			//If the catalog number is not unique, raise an error
-			if(errorFlag)
-			{
-				cerr << "Error in data row " << dataRow << ": Duplicate catalog number " << eclipseDataArray.Get(index).GetCatalogNum() << "." << endl;
-			}
-		}
-
-		//Stay at the same index and delete the old row at this location
-		if(errorFlag)
-		{
-			eclipseDataArray.RemoveAt(index);
-			--index;
-		}
-
-		//No matter what, increment dataRow to keep track of the line we are really on
-		++dataRow;
-
-		//IF no errors are present, allow output
+		return false;
 	}
+	//If an eclipse is not partial, it should have exactly 18 columns
+	else if(eclipse.getEclipseType()[0] != 'P' && eclipse.getNumColumns() != 18)
+	{
+		cerr << "Error in data row " << dataRow << ": " << eclipse.getNumColumns() << " columns found. ";
+		cerr << "Should be 18.\n";
+
+		return false;
+	}
+
+
+	//Check the first 7 applicable rows to see if they are whole numbers
+	for(int c = 0; c < 7; c++)
+	{
+		isValidNumber = isWholeNumber(eclipse.getCell(wholeNumCols[c] - 1));
+
+		if(!isValidNumber)
+		{
+			cerr << "Error in data row " << dataRow << ": Column " << wholeNumCols[c] << " is not a whole number.\n";
+			return false;
+		}
+	}
+
+	//Check the two floating point columns
+	for(int c = 0; c < 2; c++)
+	{
+		isValidNumber = isDecimalNumber(eclipse.getCell(floatNumCols[c] - 1));
+
+		if(!isValidNumber)
+		{
+			cerr << "Error in data row " << dataRow << ": Column " << floatNumCols[c] << " is not a decimal number.\n";
+			return false;
+		}
+	}
+
+	//Check the last 3 applicable columns for whole numbers
+	for(int c = 7; c < 10; c++)
+	{
+		isValidNumber = isWholeNumber(eclipse.getCell(wholeNumCols[c] - 1));
+
+		if(!isValidNumber)
+		{
+			cerr << "Error in data row " << dataRow << ": Column " << wholeNumCols[c] << " is not a whole number.\n";
+			return false;
+		}
+	}
+
+	//IF no errors are present, allow output
+	return true;
 }
 
 

@@ -13,26 +13,27 @@
 #include "Eclipse.h"
 #include "ResizableArray.h"
 
-/**
- * Checks to see if there are errors in the data
- * @param eclipseDataArray the whole database of eclipses
- */
-void CheckForErrors(ResizableArray<Eclipse> & eclipseDataArray);
 
-/**
- * Processes a raw data string into usable modular data
- * @param rawData the raw input
- * @param eclipseDataArray The data structure that contains all the eclipses
- */
-void ProcessRow(std::string rawData, ResizableArray<Eclipse> & eclipseDataArray);
+void dataInputLoop(ResizableArray<Eclipse>& eclipseDataArray);
+
+void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray);
+
+
+void loadFile(ResizableArray<Eclipse>& eclipseDataArray, std::string file);
+
+bool isValid(Eclipse eclipse, int dataRow);
+
+
+void processRow(std::string rawData, ResizableArray<Eclipse> & eclipseDataArray, int row);
+
 
 /**
  * Checks to see if an eclipse's catalog number is unique
  * @param eclipseDataArray The entire database of eclipses
  * @param index The index of the eclipse to consider for uniqueness
- * @return true if the catalog number is unique, false if it is repeated
+ * @return -1 if the catalog number is unique, the index of the duplicate if it is repeated
  */
-bool isNumberUnique(ResizableArray<Eclipse> eclipseDataArray, int index);
+int isNumberUnique(ResizableArray<Eclipse> eclipseDataArray, Eclipse eclipse);
 
 /**
  * Checks to see if a string could be a whole number

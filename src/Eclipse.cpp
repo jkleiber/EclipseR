@@ -48,7 +48,7 @@ Eclipse::~Eclipse()
 
 }
 
-bool Eclipse::Equals(Eclipse Eclipse)
+bool Eclipse::equals(Eclipse Eclipse)
 {
 	if(this->catalogNum == Eclipse.catalogNum && this->eclipseType == Eclipse.eclipseType
 			&& this->numCells == Eclipse.numCells && this->numColumns == Eclipse.numColumns) {
@@ -72,55 +72,54 @@ bool Eclipse::Equals(Eclipse Eclipse)
 	return false;
 }
 
-std::string Eclipse::GetCatalogNum() const {
+std::string Eclipse::getCatalogNum() const {
 	return catalogNum;
 }
 
-void Eclipse::SetCatalogNum(const std::string catalogNum) {
+void Eclipse::setCatalogNum(const std::string catalogNum) {
 	this->catalogNum = catalogNum;
 }
 
-std::string Eclipse::GetCell(int index) const {
+std::string Eclipse::getCell(int index) const {
 	return cells[index];
 }
 
-void Eclipse::AddCell(std::string cell, int index) {
+void Eclipse::addCell(std::string cell, int index) {
 	this->cells[index] = cell;
 
 	numColumns++;
 }
 
-std::string Eclipse::GetEclipseType() const {
+std::string Eclipse::getEclipseType() const {
 	return eclipseType;
 }
 
-void Eclipse::SetEclipseType(std::string eclipseType) {
+void Eclipse::setEclipseType(std::string eclipseType) {
 	this->eclipseType = eclipseType;
 }
 
-int Eclipse::GetNumColumns() const {
+int Eclipse::getNumColumns() const {
 	return this->numColumns;
 }
 
-void Eclipse::SetNumColumns(int numColumns) {
+void Eclipse::setNumColumns(int numColumns) {
 	this->numColumns = numColumns;
 }
 
-std::ostream&operator<<(std::ostream& os, Eclipse Eclipse)
+void Eclipse::setRawInput(std::string rawInput)
 {
-	std::string csv = "";
+	this->rawInput = rawInput;
+}
 
-	for(int i = 0; i < Eclipse.GetNumColumns(); ++i)
-	{
-		csv.append(Eclipse.GetCell(i));
 
-		if(i != (Eclipse.GetNumColumns() - 1))
-		{
-			csv.append(",");
-		}
-	}
+std::string Eclipse::getRawInput()
+{
+	return this->rawInput;
+}
 
-	os << csv;
+std::ostream&operator<<(std::ostream& os, Eclipse eclipse)
+{
+	os << eclipse.rawInput;
 
 	return os;
 }
