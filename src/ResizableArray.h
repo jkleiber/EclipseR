@@ -21,11 +21,13 @@ class ResizableArray {
 	 * @param eclipseData the data to output
 	 * @return an ostream to output through cout
 	 */
-	friend std::ostream&operator<<(std::ostream& os, ResizableArray eclipseArray)
+	friend std::ostream& operator<<(std::ostream& os, ResizableArray &arr)
 	{
-		for(int i = eclipseArray.numElements - 1; i >= 0; --i)
+		os << arr.header << std::endl;
+
+		for(int i = 0; i < arr.numElements; ++i)
 		{
-			os << eclipseArray.Get(i) << std::endl;
+			os << arr.get(i) << std::endl;
 		}
 
 		return os;
@@ -87,9 +89,9 @@ class ResizableArray {
 		 */
 		T& get(int index)
 		{
-			if(index > this->numElements || index < 0)
+			if(index >= this->numElements || index < 0)
 			{
-				throw("Index out of range");
+				throw("ResizableArray::get(): Index out of range");
 			}
 			//Get the value from the desired index
 			return this->resizableArray[index];
@@ -101,7 +103,7 @@ class ResizableArray {
 		 */
 		int getNumElements()
 		{
-			return numElements;
+			return this->numElements;
 		}
 
 		/**
@@ -141,7 +143,7 @@ class ResizableArray {
 		{
 			if(index > this->numElements || index < 0)
 			{
-				throw("Index out of range");
+				throw("ResizableArray::addAt(): Index out of range");
 			}
 
 			//IF the next element puts us over allocation, add more memory to the array
@@ -164,7 +166,7 @@ class ResizableArray {
 		{
 			if(index >= this->numElements || index < 0)
 			{
-				throw("Index out of range");
+				throw("ResizableArray::replaceAt(): Index out of range");
 			}
 
 			//Replace the old value with the new value
@@ -182,7 +184,7 @@ class ResizableArray {
 		{
 			if(index >= this->numElements || index < 0)
 			{
-				throw("Index out of range");
+				throw("ResizableArray::removeAt(): Index out of range");
 			}
 
 			//Only delete elements if the index is in bounds
@@ -205,6 +207,21 @@ class ResizableArray {
 		void incrementValidCount()
 		{
 			this->numValidElementsRead++;
+		}
+
+		int getValidCount() const
+		{
+			return this->numValidElementsRead;
+		}
+
+		void setHeader(std::string header)
+		{
+			this->header = header;
+		}
+
+		std::string getHeader()
+		{
+			return this->header;
 		}
 
 		/**
@@ -235,6 +252,11 @@ class ResizableArray {
 		 * The number of valid elements read into the array
 		 */
 		int numValidElementsRead;
+
+		/**
+		 * The header at the top of the input file
+		 */
+		std::string header;
 
 		/**
 		 * Give the array a new size

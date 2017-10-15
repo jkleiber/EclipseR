@@ -18,7 +18,7 @@ class Eclipse
 	 * @param eclipseData the data to output
 	 * @return an ostream to output through cout
 	 */
-	friend std::ostream&operator<<(std::ostream& os, Eclipse eclipse);
+	friend std::ostream&operator<<(std::ostream& os, Eclipse &eclipse);
 
 	public:
 		/**
@@ -97,17 +97,45 @@ class Eclipse
 		 */
 		void setNumColumns(int numColumns);
 
+		void addWholeNumber(int wholeNum, int index);
+		int getWholeNumber(int index) const;
+
+		void addFloatingPoint(double floatNum, int index);
+		double getFloatingPoint(int index) const;
+
+		/**
+		 *
+		 * @return
+		 */
+		int getMonthNumber() const;
+
+		/**
+		 *
+		 */
+		void setMonthNumber(std::string month);
+
+		/**
+		 *
+		 * @return
+		 */
+		std::string getRawInput() const;
+
 		/**
 		 *
 		 * @param rawInput
 		 */
 		void setRawInput(std::string rawInput);
 
-		/**
-		 *
-		 * @return
-		 */
-		std::string getRawInput();
+		void addError(int col);
+
+		void printAllErrors();
+
+		int getNumErrors();
+
+		void setRow(int row);
+
+		int getRow();
+
 
 	private:
 
@@ -125,6 +153,21 @@ class Eclipse
 		 * The raw data
 		 */
 		std::string cells[24];
+
+		int wholeNumbers[24];
+
+		double floatingPointNumbers[24];
+
+		bool columnErrors[24];
+
+		int numErrors;
+
+		int row;
+
+		/**
+		 * The number corresponding to the month of the year
+		 */
+		int monthNumber;
 
 		/**
 		 * How this eclipse appears in the file

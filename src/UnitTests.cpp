@@ -30,7 +30,7 @@ UnitTests::UnitTests()
 	//Add and Get Element Test
 	ResizableArray<Eclipse> addTestArray;
 	Eclipse eD;
-	addTestArray.Add(eD);
+	addTestArray.add(eD);
 	if(!doesAddGetWork(eda2, eD))
 	{
 		cout << "\tFAIL: Add/Get Element Test\n";
@@ -42,9 +42,9 @@ UnitTests::UnitTests()
 
 	for(int i = 0; i < 100; ++i)
 	{
-		dataArray.Add(e);
+		dataArray.add(e);
 	}
-	if(dataArray.GetNumElements() != 100 || dataArray.size() != 160)
+	if(dataArray.getNumElements() != 100 || dataArray.size() != 160)
 	{
 		cout << "\tFAIL: Add Memory Allocation Test\n";
 	}
@@ -54,15 +54,15 @@ UnitTests::UnitTests()
 	Eclipse ed;
 	for(int i = 0; i < 100; ++i)
 	{
-		dataArray2.Add(ed);
+		dataArray2.add(ed);
 	}
 
 	for(int i = 0; i < 55; ++i)
 	{
-		dataArray2.RemoveAt(0);
+		dataArray2.removeAt(0);
 	}
 
-	if(dataArray2.GetNumElements() != 45 || dataArray2.size() != 80)
+	if(dataArray2.getNumElements() != 45 || dataArray2.size() != 80)
 	{
 		cout << "\tFAIL: Remove Memory Allocation Test\n";
 	}
@@ -72,7 +72,7 @@ UnitTests::UnitTests()
 	Eclipse eclipse;
 	//Get
 	try{
-		eclipse = dataArray3.Get(5);
+		eclipse = dataArray3.get(5);
 		cout << "\tFAIL: Out of Range Test 1\n";
 	}
 	catch(const char* e)
@@ -82,7 +82,7 @@ UnitTests::UnitTests()
 
 	//RemoveAt
 	try{
-		dataArray3.RemoveAt(5);
+		dataArray3.removeAt(5);
 		cout << "\tFAIL: Out of Range Test 1\n";
 	}
 	catch(const char* e)
@@ -93,7 +93,7 @@ UnitTests::UnitTests()
 	//AddAt
 	Eclipse z;
 	try{
-		dataArray3.AddAt(z, 5);
+		dataArray3.addAt(z, 5);
 		cout << "\tFAIL: Out of Range Test 1\n";
 	}
 	catch(const char* e)
@@ -108,7 +108,7 @@ UnitTests::UnitTests()
 
 bool UnitTests::doesDefaultConstructorWork(ResizableArray<Eclipse> eda)
 {
-	if(eda.GetNumElements() != 0 || eda.size() != 10)
+	if(eda.getNumElements() != 0 || eda.size() != 10)
 	{
 		return false;
 	}
@@ -117,7 +117,7 @@ bool UnitTests::doesDefaultConstructorWork(ResizableArray<Eclipse> eda)
 
 bool UnitTests::doesOtherConstructorWork(ResizableArray<Eclipse> eda, int size)
 {
-	if(eda.GetNumElements() != 0 || eda.size() != size)
+	if(eda.getNumElements() != 0 || eda.size() != size)
 	{
 		return false;
 	}
@@ -126,7 +126,7 @@ bool UnitTests::doesOtherConstructorWork(ResizableArray<Eclipse> eda, int size)
 
 bool UnitTests::doesAddGetWork(ResizableArray<Eclipse> eda, Eclipse eD)
 {
-	if(eda.Get(0).Equals(eD))
+	if(eda.get(0).equals(eD))
 	{
 		return true;
 	}

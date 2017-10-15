@@ -6,16 +6,19 @@
 CPP_SRCS += \
 ../src/Eclipse.cpp \
 ../src/EclipseR.cpp \
+../src/FileInput.cpp \
 ../src/UnitTests.cpp 
 
 OBJS += \
 ./src/Eclipse.o \
 ./src/EclipseR.o \
+./src/FileInput.o \
 ./src/UnitTests.o 
 
 CPP_DEPS += \
 ./src/Eclipse.d \
 ./src/EclipseR.d \
+./src/FileInput.d \
 ./src/UnitTests.d 
 
 
