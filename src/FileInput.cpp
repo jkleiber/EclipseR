@@ -105,11 +105,6 @@ void FileInput::processRow(string rawData, ResizableArray<Eclipse>& eclipseDataA
 			{
 				eclipseData.setCatalogNum(cell);
 			}
-			else if(col == 3)
-			{
-				//Set the month number for sorting purposes
-				eclipseData.setMonthNumber(cell);
-			}
 			else if(col == 9) //If the column contains eclipse type, record it for later
 			{
 				eclipseData.setEclipseType(cell);
@@ -120,7 +115,8 @@ void FileInput::processRow(string rawData, ResizableArray<Eclipse>& eclipseDataA
 			{
 				try{
 					int num = convertStrToInt(cell);
-					eclipseData.addWholeNumber(num, col);
+					Cell c(num);
+					eclipseData.addCell(c, col);
 				}
 				catch(...)
 				{
@@ -131,16 +127,20 @@ void FileInput::processRow(string rawData, ResizableArray<Eclipse>& eclipseDataA
 			{
 				try{
 					double fPoint = convertStrToDouble(cell);
-					eclipseData.addFloatingPoint(fPoint, col);
+					Cell d(fPoint);
+					eclipseData.addCell(d, col);
 				}
 				catch(...)
 				{
 					eclipseData.addError(col);
 				}
 			}
+			else
+			{
+				Cell s(cell);
 
-			//Save the cells individually for later processing
-			eclipseData.addCell(cell, col);
+				eclipseData.addCell(s, col);
+			}
 
 			//Reset the cell string
 			cell = "";
@@ -166,6 +166,16 @@ void FileInput::processRow(string rawData, ResizableArray<Eclipse>& eclipseDataA
 	if(isValid(eclipseData, row) == true)
 	{
 		this->validElementsRead++;
+
+		//Add in the fake columns for sorting reasons
+		if(col == 16)
+		{
+			Cell seventeen(0, true);
+			Cell eighteen("");
+
+			eclipseData.addCell(seventeen, 16);
+			eclipseData.addCell(eighteen, 17);
+		}
 
 		int duplicateIndex = isNumberUnique(eclipseDataArray, eclipseData);
 

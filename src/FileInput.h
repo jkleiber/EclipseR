@@ -12,6 +12,8 @@
 #include <string>
 #include <fstream>
 #include "ResizableArray.h"
+
+#include "Cell.h"
 #include "Eclipse.h"
 
 
@@ -24,6 +26,10 @@ class FileInput {
 		int getNumValid() const;
 
 		int getTotal() const;
+
+		int convertStrToInt(std::string str);
+
+		double convertStrToDouble(std::string str);
 
 		virtual ~FileInput();
 
@@ -48,9 +54,6 @@ class FileInput {
 		bool isNumber(char c);
 
 
-		int convertStrToInt(std::string str);
-
-		double convertStrToDouble(std::string str);
 };
 
 

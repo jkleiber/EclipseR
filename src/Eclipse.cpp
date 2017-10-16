@@ -15,7 +15,6 @@ Eclipse::Eclipse()
 	this->numCells = 24;
 	this->numColumns = 0;
 	this->rawInput = "";
-	this->monthNumber = 0;
 	this->numErrors = 0;
 	this->row = 0;
 }
@@ -28,23 +27,12 @@ Eclipse::Eclipse(Eclipse &eclipse)
 	this->numCells = eclipse.numCells;
 	this->numColumns = eclipse.numColumns;
 	this->rawInput = eclipse.rawInput;
-	this->monthNumber = eclipse.monthNumber;
 	this->numErrors = eclipse.numErrors;
 	this->row = eclipse.row;
 
 	for(int i = 0; i < 24; ++i)
 	{
 		this->cells[i] = eclipse.cells[i];
-	}
-
-	for(int i = 0; i < 24; ++i)
-	{
-		this->wholeNumbers[i] = eclipse.wholeNumbers[i];
-	}
-
-	for(int i = 0; i < 24; ++i)
-	{
-		this->floatingPointNumbers[i] = eclipse.floatingPointNumbers[i];
 	}
 
 	for(int i = 0; i < 24; ++i)
@@ -61,23 +49,12 @@ void Eclipse::operator=(const Eclipse & eclipse)
 	this->numCells = eclipse.numCells;
 	this->numColumns = eclipse.numColumns;
 	this->rawInput = eclipse.rawInput;
-	this->monthNumber = eclipse.monthNumber;
 	this->numErrors = eclipse.numErrors;
 	this->row = eclipse.row;
 
 	for(int i = 0; i < 24; ++i)
 	{
 		this->cells[i] = eclipse.cells[i];
-	}
-
-	for(int i = 0; i < 24; ++i)
-	{
-		this->wholeNumbers[i] = eclipse.wholeNumbers[i];
-	}
-
-	for(int i = 0; i < 24; ++i)
-	{
-		this->floatingPointNumbers[i] = eclipse.floatingPointNumbers[i];
 	}
 
 	for(int i = 0; i < 24; ++i)
@@ -123,11 +100,11 @@ void Eclipse::setCatalogNum(const std::string catalogNum) {
 	this->catalogNum = catalogNum;
 }
 
-std::string Eclipse::getCell(int index) const {
+Cell Eclipse::getCell(int index) const {
 	return cells[index];
 }
 
-void Eclipse::addCell(std::string cell, int index) {
+void Eclipse::addCell(Cell cell, int index) {
 	this->cells[index] = cell;
 
 	numColumns++;
@@ -147,71 +124,6 @@ int Eclipse::getNumColumns() const {
 
 void Eclipse::setNumColumns(int numColumns) {
 	this->numColumns = numColumns;
-}
-
-void Eclipse::addWholeNumber(int wholeNum, int index)
-{
-	if(index < 24 && index >= 0)
-	{
-		this->wholeNumbers[index] = wholeNum;
-	}
-	else
-	{
-		throw "Eclipse::addWholeNumber(): Index out of bounds.";
-	}
-}
-
-int Eclipse::getWholeNumber(int index) const
-{
-	if(index < 24 && index >= 0)
-	{
-		return this->wholeNumbers[index];
-	}
-
-	throw "Eclipse::getWholeNumber(): Index out of bounds.";
-}
-
-void Eclipse::addFloatingPoint(double floatNum, int index)
-{
-	if(index < 24 && index >= 0)
-	{
-		this->floatingPointNumbers[index] = floatNum;
-	}
-	else
-	{
-		throw "Eclipse::addFloatingPoint(): Index out of bounds.";
-	}
-}
-
-double Eclipse::getFloatingPoint(int index) const
-{
-	if(index < 24 && index >= 0)
-	{
-		return this->floatingPointNumbers[index];
-	}
-
-	throw "Eclipse::getFloatingPoint(): Index out of bounds.";
-}
-
-int Eclipse::getMonthNumber() const
-{
-	return this->monthNumber;
-}
-
-void Eclipse::setMonthNumber(std::string month)
-{
-	std::string months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-	int i;
-
-	for(i = 0; i < 12; ++i)
-	{
-		if(month == months[i])
-		{
-			break;
-		}
-	}
-
-	this->monthNumber = i + 1;
 }
 
 std::string Eclipse::getRawInput() const {

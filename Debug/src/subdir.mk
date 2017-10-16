@@ -4,18 +4,21 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/Cell.cpp \
 ../src/Eclipse.cpp \
 ../src/EclipseR.cpp \
 ../src/FileInput.cpp \
 ../src/UnitTests.cpp 
 
 OBJS += \
+./src/Cell.o \
 ./src/Eclipse.o \
 ./src/EclipseR.o \
 ./src/FileInput.o \
 ./src/UnitTests.o 
 
 CPP_DEPS += \
+./src/Cell.d \
 ./src/Eclipse.d \
 ./src/EclipseR.d \
 ./src/FileInput.d \

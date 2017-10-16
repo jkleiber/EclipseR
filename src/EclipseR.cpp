@@ -119,11 +119,127 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 		}
 		else if(userInput == "S")
 		{
+			int col;
+			string c;
 
+			//Request the column to sort
+			cout << "Data field (1-18)?\n";
+			getline(cin, c);
+
+			//If the user did not just press enter, attempt to convert the input
+			if(c != "")
+			{
+				try{
+					col = fileInput.convertStrToInt(c);
+
+					//Only operate on valid column numbers
+					if(col >= 1 && col <= 18)
+					{
+						col = col - 1;
+						eclipseDataArray.sort(col);
+					}
+				}
+				catch(...)
+				{
+					//The user entered an invalid value, reset to manip loop
+				}
+			}
 		}
 		else if(userInput == "F")
 		{
+			int col;
+			string value, c;
 
+			//Request the column to sort
+			cout << "Data field (1-18)?\n";
+			getline(cin, c);
+
+			if(c != "")
+			{
+				try{
+					//Convert the value...
+					col = fileInput.convertStrToInt(c);
+
+					//Only operate on valid column numbers
+					if(col >= 1 && col <= 18)
+					{
+						col = col - 1;
+
+						if(col == 0 || col == 1 || col == 2 || col == 4 || col == 6 || col == 7 || col == 8 || col == 14 || col == 15 || col == 16)
+						{
+							cout << "Number to find?\n";
+							getline(cin, value);
+
+							try{
+								int num = fileInput.convertStrToInt(value);
+								Cell c(num);
+								eclipseDataArray.find(col, c);
+							}
+							catch(...)
+							{
+								//This is not a valid value to look for; give up
+							}
+						}
+						else if(col == 10 || col == 11)
+						{
+							cout << "Number to find?\n";
+							getline(cin, value);
+
+							try{
+								double fPoint = fileInput.convertStrToDouble(value);
+								Cell c(fPoint);
+								eclipseDataArray.find(col, c);
+							}
+							catch(...)
+							{
+								//This is not a valid value to look for; give up
+							}
+						}
+						else if(col == 4)
+						{
+							cout << "Month abbreviation to find?\n";
+							getline(cin, value);
+
+							bool valid = false;
+							string months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+							for(int i = 0; i < 12; ++i)
+							{
+								if(value == months[i])
+								{
+									valid = true;
+								}
+							}
+
+							if(valid)
+							{
+								Cell c(value);
+								eclipseDataArray.find(col, c);
+							}
+						}
+						else
+						{
+							cout << "Value to find?\n";
+							getline(cin, value);
+
+							if(col == 16 && value == "")
+							{
+								Cell c(0, true);
+								eclipseDataArray.find(col, c);
+							}
+							else
+							{
+								Cell c(value);
+								eclipseDataArray.find(col, c);
+							}
+						}
+					}
+				}
+				catch(...)
+				{
+					//The user entered an invalid number, go back to manip loop
+				}
+			}
 		}
 		else if(userInput == "Q")
 		{

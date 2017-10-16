@@ -9,6 +9,7 @@
 #define ECLIPSE_H_
 
 #include <string>
+#include "Cell.h"
 
 class Eclipse
 {
@@ -64,14 +65,14 @@ class Eclipse
 		 * @param index the column (0 indexed) to get the data from
 		 * @return the desired cell data
 		 */
-		std::string getCell(int index) const;
+		Cell getCell(int index) const;
 
 		/**
 		 * Adds a cell to the EclipseData
-		 * @param cell the string data to add
+		 * @param cell the data to add
 		 * @param index the column (0 indexed) to add it to
 		 */
-		void addCell(std::string cell, int index);
+		void addCell(Cell cell, int index);
 
 		/**
 		 * Gets the type of the eclipse
@@ -96,12 +97,6 @@ class Eclipse
 		 * @param numColumns the number of columns there are
 		 */
 		void setNumColumns(int numColumns);
-
-		void addWholeNumber(int wholeNum, int index);
-		int getWholeNumber(int index) const;
-
-		void addFloatingPoint(double floatNum, int index);
-		double getFloatingPoint(int index) const;
 
 		/**
 		 *
@@ -152,22 +147,13 @@ class Eclipse
 		/**
 		 * The raw data
 		 */
-		std::string cells[24];
-
-		int wholeNumbers[24];
-
-		double floatingPointNumbers[24];
+		Cell cells[24];
 
 		bool columnErrors[24];
 
 		int numErrors;
 
 		int row;
-
-		/**
-		 * The number corresponding to the month of the year
-		 */
-		int monthNumber;
 
 		/**
 		 * How this eclipse appears in the file
