@@ -124,40 +124,49 @@ void EclipseOperations::binarySearch(Cell needle, int col, int left, int right, 
 {
 	int midpoint = (left + right) / 2;
 
-	if(resizableArray.get(midpoint).getCell(col) == needle)//Found it!
+	if(right >= left)
 	{
-		//Look for duplicates
-		int i = midpoint;
-
-		//Find the start point of the duplicates
-		while(resizableArray.get(i).getCell(col) == needle && i >= 0)
+		if(resizableArray.get(midpoint).getCell(col) == needle)//Found it!
 		{
-			--i;
-		}
+			//Look for duplicates
+			int i = midpoint;
 
-		//Set the index to the first duplicate
-		++i;
+			//Find the start point of the duplicates
+			while(resizableArray.get(i).getCell(col) == needle && i >= 0)
+			{
+				--i;
 
-		//Go through all the duplicates and add them to the printArray
-		while(resizableArray.get(i).getCell(col) == needle && i < resizableArray.getNumElements())
-		{
-			printArray.add(resizableArray.get(i));
+				if(i < 0)
+				{
+					break;
+				}
+			}
+
+			//Set the index to the first duplicate
 			++i;
+
+			//Go through all the duplicates and add them to the printArray
+			while(resizableArray.get(i).getCell(col) == needle && i < resizableArray.getNumElements())
+			{
+				printArray.add(resizableArray.get(i));
+				++i;
+
+				if(i >= resizableArray.getNumElements())
+				{
+					break;
+				}
+			}
 		}
-	}
-	else if(left >= right)
-	{
-		//The binary search found nothing!
-	}
-	else if(resizableArray.get(midpoint).getCell(col) < needle)
-	{
-		//Cut the array in half to only search the greater elements
-		binarySearch(needle, col, midpoint + 1, right, resizableArray, printArray);
-	}
-	else if(resizableArray.get(midpoint).getCell(col) > needle)
-	{
-		//Cut the array in half to only look for smaller elements
-		binarySearch(needle, col, left, midpoint - 1, resizableArray, printArray);
+		else if(resizableArray.get(midpoint).getCell(col) < needle)
+		{
+			//Cut the array in half to only search the greater elements
+			binarySearch(needle, col, midpoint + 1, right, resizableArray, printArray);
+		}
+		else if(resizableArray.get(midpoint).getCell(col) > needle)
+		{
+			//Cut the array in half to only look for smaller elements
+			binarySearch(needle, col, left, midpoint - 1, resizableArray, printArray);
+		}
 	}
 }
 
