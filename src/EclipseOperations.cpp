@@ -65,10 +65,12 @@ void EclipseOperations::quickSort(int left, int right, ResizableArray<Eclipse>& 
 {
 	if(left < right)
 	{
+		//Select a central pivot
 		int pivot = (left + right) / 2;
 		int i = left - 1, j = right + 1;
 
 		do{
+			//Go until a value is greater than pivot in the low partition
 			do
 			{
 				if((i + 1) < resizableArray.getNumElements())
@@ -82,6 +84,7 @@ void EclipseOperations::quickSort(int left, int right, ResizableArray<Eclipse>& 
 
 			} while(resizableArray.get(i).getCell(currentSort) <= resizableArray.get(pivot).getCell(currentSort) && i <= right);
 
+			//Go until a value in the high partition is less than pivot
 			do
 			{
 				if(j > 0)
@@ -95,21 +98,23 @@ void EclipseOperations::quickSort(int left, int right, ResizableArray<Eclipse>& 
 
 			} while(resizableArray.get(j).getCell(currentSort) >= resizableArray.get(pivot).getCell(currentSort) && j >= i);
 
+			//If the indices have not crossed yet, and we are here, swap the values and continue
 			if(i < j)
 			{
 				resizableArray.swap(i, j);
 			}
 		} while(i < j);
 
+		//set j to the boundary between low and high if it is not already
 		if(i < pivot)
 		{
 			j = i;
 		}
 
-		std::cout << pivot << std::endl;
-
+		//Swap the pivot with element j to create a sorted subarray
 		resizableArray.swap(pivot, j);
 
+		//Recursively call quicksort for the unsorted parts
 		quickSort(left, j-1, resizableArray, currentSort);
 		quickSort(j+1, right, resizableArray, currentSort);
 	}
@@ -139,6 +144,10 @@ void EclipseOperations::binarySearch(Cell needle, int col, int left, int right, 
 			printArray.add(resizableArray.get(i));
 			++i;
 		}
+	}
+	else if(left >= right)
+	{
+		//The binary search found nothing!
 	}
 	else if(resizableArray.get(midpoint).getCell(col) < needle)
 	{

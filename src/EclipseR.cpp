@@ -46,13 +46,16 @@ int main()
 
 void dataInputLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInput)
 {
+	//File name to load
 	string filename = " ";
 
+	//While the user is entering real filenames
 	while(filename != "")
 	{
 		cout << "Enter a data file name: ";
 		getline(cin, filename);
 
+		//If the file name is legitimate, load the file
 		if(filename != "")
 		{
 			fileInput.loadFile(eclipseDataArray, filename);
@@ -62,25 +65,33 @@ void dataInputLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 
 void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInput)
 {
+	//Create a data operations object for searching and sorting
 	EclipseOperations dataOps;
+
+	//Create a string to contain user input
 	string userInput = "";
 
+	//Stay in the loop until the user presses quit
 	while(userInput != "Q")
 	{
+		//Ask for user input
 		cout << "(O)utput, (S)ort, (F)ind, or (Q)uit?\n";
 		getline(cin, userInput);
 
+		//If the user wants to output the array:
 		if(userInput == "O")
 		{
 			ofstream outputFile;
 			string outputUserInput = "";
 			bool usingStdout = false;
 
+			//Until the user enters an available file, or no file, ask for more input
 			while(true)
 			{
 				cout << "Enter the name of an output file: ";
 				getline(cin, outputUserInput);
 
+				//They entered nothing: use stdout
 				if(outputUserInput == "")
 				{
 					usingStdout = true;
@@ -101,6 +112,7 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 				}
 			}
 
+			//Output to stdout if it was selected
 			if(usingStdout)
 			{
 				cout << eclipseDataArray;
@@ -109,7 +121,7 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 				cout << "; Eclipses in memory: " << eclipseDataArray.getNumElements();
 				cout << endl;
 			}
-			else
+			else //Output to file instead
 			{
 				outputFile << eclipseDataArray << endl;
 				outputFile << "Data lines read: " << fileInput.getTotal();
@@ -118,7 +130,7 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 				outputFile << endl;
 			}
 		}
-		else if(userInput == "S")
+		else if(userInput == "S") //If the user selected sort:
 		{
 			int col;
 			string c;
@@ -136,19 +148,20 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 					//Only operate on valid column numbers
 					if(col >= 1 && col <= 18)
 					{
+						//Change to 0 indexing
 						col = col - 1;
 
+						//Sort on that column number
 						dataOps.sort(col, eclipseDataArray);
 					}
 				}
-				catch(const exception &msg)
+				catch(...)
 				{
-					cerr << msg.what() << endl;
 					//The user entered an invalid value, reset to manip loop
 				}
 			}
 		}
-		else if(userInput == "F")
+		else if(userInput == "F") //If the user wanted to find a certain value
 		{
 			int col;
 			string value, c;
@@ -157,6 +170,7 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 			cout << "Data field (1-18)?\n";
 			getline(cin, c);
 
+			//If the user entered something
 			if(c != "")
 			{
 				try{
@@ -168,6 +182,7 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 					{
 						col = col - 1;
 
+						//If this is supposed to be a int, convert it and find
 						if(col == 0 || col == 1 || col == 2 || col == 4 || col == 6 || col == 7 || col == 8 || col == 14 || col == 15 || col == 16)
 						{
 							cout << "Number to find?\n";
@@ -214,6 +229,7 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 								}
 							}
 
+							//It is relatively unclear, but I will sort based on the abbreviation representation
 							if(valid)
 							{
 								Cell c(value);
@@ -244,6 +260,7 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 				}
 			}
 		}
+		//If the user wants out, leave the loop and exit the program
 		else if(userInput == "Q")
 		{
 			break;

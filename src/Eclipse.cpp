@@ -143,7 +143,7 @@ void Eclipse::addError(int col)
 
 void Eclipse::printAllErrors()
 {
-	for(int i = 0; i < numErrors; ++i)
+	for(int i = 0; i < numColumns; ++i)
 	{
 		if(columnErrors[i] && (i == 10 || i == 11))
 		{

@@ -99,36 +99,44 @@ class Eclipse
 		void setNumColumns(int numColumns);
 
 		/**
-		 *
-		 * @return
-		 */
-		int getMonthNumber() const;
-
-		/**
-		 *
-		 */
-		void setMonthNumber(std::string month);
-
-		/**
-		 *
-		 * @return
+		 * Returns the raw value of the row that the eclipse was generated from
+		 * @return the raw data the eclipse came from
 		 */
 		std::string getRawInput() const;
 
 		/**
-		 *
+		 * Adds the raw input row to the eclipse
 		 * @param rawInput
 		 */
 		void setRawInput(std::string rawInput);
 
+		/**
+		 * Sets a column as having an error
+		 * @param col
+		 */
 		void addError(int col);
 
+		/**
+		 * Prints all the errors present in the eclipse
+		 */
 		void printAllErrors();
 
+		/**
+		 * Gets the number of errors present
+		 * @return the number of column errors in the eclipse
+		 */
 		int getNumErrors();
 
+		/**
+		 * Sets the data row of the eclipse
+		 * @param row the row of the file the eclipse was formed from
+		 */
 		void setRow(int row);
 
+		/**
+		 * Gets the row the eclipse appeared on
+		 * @return the row the eclipse appeared on
+		 */
 		int getRow();
 
 
@@ -149,10 +157,19 @@ class Eclipse
 		 */
 		Cell cells[24];
 
+		/**
+		 * Array indicating if there were errors in a column or not
+		 */
 		bool columnErrors[24];
 
+		/**
+		 * Variable to track number of errors
+		 */
 		int numErrors;
 
+		/**
+		 * Row of the file this eclipse came from
+		 */
 		int row;
 
 		/**

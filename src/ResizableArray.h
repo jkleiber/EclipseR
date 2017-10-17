@@ -58,7 +58,7 @@ class ResizableArray {
 		}
 
 		/**
-		 *
+		 * Copy Constructor
 		 * @param arr
 		 */
 		ResizableArray(ResizableArray &arr)
@@ -69,7 +69,7 @@ class ResizableArray {
 		}
 
 		/**
-		 *
+		 * Copy assignment operator
 		 * @param arr
 		 */
 		void operator=(const ResizableArray &arr)
@@ -132,9 +132,9 @@ class ResizableArray {
 		}
 
 		/**
-		 *
-		 * @param t
-		 * @param index
+		 * Adds an element at a certain position
+		 * @param t Element to add
+		 * @param index position to add element
 		 */
 		void addAt(T t, int index)
 		{
@@ -159,6 +159,11 @@ class ResizableArray {
 			++numElements;
 		}
 
+		/**
+		 * Replaces a value at an index with another value
+		 * @param t The value to insert
+		 * @param index The index of the value to replace
+		 */
 		void replaceAt(T t, int index)
 		{
 			if(index >= this->numElements || index < 0)
@@ -198,6 +203,11 @@ class ResizableArray {
 			}
 		}
 
+		/**
+		 * Swaps two elements at certain indices
+		 * @param i index of element to swap with element at index j
+		 * @param j index of element to swap with element at index i
+		 */
 		void swap(int i, int j)
 		{
 			T temp;
@@ -206,11 +216,19 @@ class ResizableArray {
 			resizableArray[j] = temp;
 		}
 
+		/**
+		 * Sets the information about the array from a data file
+		 * @param header
+		 */
 		void setHeader(std::string header)
 		{
 			this->header = header;
 		}
 
+		/**
+		 * Gets the header from the array
+		 * @return the header of the array
+		 */
 		std::string getHeader()
 		{
 			return this->header;
