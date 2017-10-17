@@ -62,6 +62,7 @@ void dataInputLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 
 void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInput)
 {
+	EclipseOperations dataOps;
 	string userInput = "";
 
 	while(userInput != "Q")
@@ -136,11 +137,13 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 					if(col >= 1 && col <= 18)
 					{
 						col = col - 1;
-						eclipseDataArray.sort(col);
+
+						dataOps.sort(col, eclipseDataArray);
 					}
 				}
-				catch(...)
+				catch(const exception &msg)
 				{
+					cerr << msg.what() << endl;
 					//The user entered an invalid value, reset to manip loop
 				}
 			}
@@ -173,7 +176,7 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 							try{
 								int num = fileInput.convertStrToInt(value);
 								Cell c(num);
-								eclipseDataArray.find(col, c);
+								dataOps.find(col, c, eclipseDataArray);
 							}
 							catch(...)
 							{
@@ -188,7 +191,7 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 							try{
 								double fPoint = fileInput.convertStrToDouble(value);
 								Cell c(fPoint);
-								eclipseDataArray.find(col, c);
+								dataOps.find(col, c, eclipseDataArray);
 							}
 							catch(...)
 							{
@@ -214,7 +217,7 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 							if(valid)
 							{
 								Cell c(value);
-								eclipseDataArray.find(col, c);
+								dataOps.find(col, c, eclipseDataArray);
 							}
 						}
 						else
@@ -225,12 +228,12 @@ void dataManipLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInp
 							if(col == 16 && value == "")
 							{
 								Cell c(0, true);
-								eclipseDataArray.find(col, c);
+								dataOps.find(col, c, eclipseDataArray);
 							}
 							else
 							{
 								Cell c(value);
-								eclipseDataArray.find(col, c);
+								dataOps.find(col, c, eclipseDataArray);
 							}
 						}
 					}

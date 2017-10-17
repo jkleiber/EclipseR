@@ -6,6 +6,7 @@
 CPP_SRCS += \
 ../src/Cell.cpp \
 ../src/Eclipse.cpp \
+../src/EclipseOperations.cpp \
 ../src/EclipseR.cpp \
 ../src/FileInput.cpp \
 ../src/UnitTests.cpp 
@@ -13,6 +14,7 @@ CPP_SRCS += \
 OBJS += \
 ./src/Cell.o \
 ./src/Eclipse.o \
+./src/EclipseOperations.o \
 ./src/EclipseR.o \
 ./src/FileInput.o \
 ./src/UnitTests.o 
@@ -20,6 +22,7 @@ OBJS += \
 CPP_DEPS += \
 ./src/Cell.d \
 ./src/Eclipse.d \
+./src/EclipseOperations.d \
 ./src/EclipseR.d \
 ./src/FileInput.d \
 ./src/UnitTests.d 

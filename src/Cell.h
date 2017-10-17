@@ -20,10 +20,13 @@ class Cell {
 
 	public:
 		Cell();
+		Cell(const Cell& c);
 		Cell(std::string data);
 		Cell(int data);
 		Cell(int data, bool isMax);
 		Cell(double data);
+
+		void operator=(Cell c);
 
 		bool operator<(Cell c);
 		bool operator==(Cell c);

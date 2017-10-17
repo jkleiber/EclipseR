@@ -10,7 +10,7 @@
 
 Cell::Cell()
 {
-	this->cellType = -1;
+	this->cellType = 0;
 	this->strData = "";
 	this->intData = 0;
 	this->floatData = 0.0;
@@ -19,6 +19,24 @@ Cell::Cell()
 
 Cell::~Cell() {
 	// TODO Auto-generated destructor stub
+}
+
+Cell::Cell(const Cell& c)
+{
+	this->cellType = c.cellType;
+	this->strData = c.strData;
+	this->intData = c.intData;
+	this->floatData = c.floatData;
+	this->isMax = c.isMax;
+}
+
+void Cell::operator=(Cell c)
+{
+	this->cellType = c.cellType;
+	this->strData = c.strData;
+	this->intData = c.intData;
+	this->floatData = c.floatData;
+	this->isMax = c.isMax;
 }
 
 std::ostream&operator<<(std::ostream& os, const Cell& cell)
@@ -46,7 +64,7 @@ Cell::Cell(std::string data)
 	this->strData = data;
 	this->intData = 0;
 	this->floatData = 0.0;
-	this->isMax = false;
+	this->isMax = data == "";
 }
 
 Cell::Cell(int data)
@@ -194,13 +212,13 @@ bool Cell::operator>(Cell c)
 
 bool Cell::operator>=(Cell c)
 {
-	if(cellType == STR_CELL)
+	if(this->cellType == STR_CELL)
 	{
-		int comp = strData.compare(c.strData);
+		int comp = this->strData.compare(c.strData);
 
 		if(comp != 0)
 		{
-			if(strData == "")
+			if(this->strData == "")
 			{
 				return true;
 			}
@@ -212,11 +230,11 @@ bool Cell::operator>=(Cell c)
 
 		return comp >= 0;
 	}
-	else if(cellType == INT_CELL)
+	else if(this->cellType == INT_CELL)
 	{
-		if(intData != c.intData)
+		if(this->intData != c.intData)
 		{
-			if(isMax)
+			if(this->isMax)
 			{
 				return true;
 			}
@@ -226,11 +244,11 @@ bool Cell::operator>=(Cell c)
 			}
 		}
 
-		return intData >= c.intData;
+		return this->intData >= c.intData;
 	}
 	else
 	{
-		return floatData >= c.floatData;
+		return this->floatData >= c.floatData;
 	}
 }
 

@@ -43,7 +43,6 @@ class ResizableArray {
 			this->resizableArray = new T[10];
 			this->arraySize = 10;
 			this->numElements = 0;
-			this->currentSort = -1;
 		}
 
 		/**
@@ -56,7 +55,6 @@ class ResizableArray {
 			this->resizableArray = new T[size];
 			this->arraySize = size;
 			this->numElements = 0;
-			this->currentSort = -1;
 		}
 
 		/**
@@ -68,7 +66,6 @@ class ResizableArray {
 			this->resizableArray = arr.resizableArray;
 			this->arraySize = arr.arraySize;
 			this->numElements = arr.numElements;
-			this->currentSort = arr.currentSort;
 		}
 
 		/**
@@ -80,7 +77,6 @@ class ResizableArray {
 			this->arraySize = arr.arraySize;
 			this->resizableArray = arr.resizableArray;
 			this->numElements = arr.numElements;
-			this->currentSort = arr.currentSort;
 		}
 
 		/**
@@ -172,9 +168,6 @@ class ResizableArray {
 
 			//Replace the old value with the new value
 			this->resizableArray[index] = t;
-
-			//increase the number of elements counter
-			++numElements;
 		}
 
 		/**
@@ -205,6 +198,14 @@ class ResizableArray {
 			}
 		}
 
+		void swap(int i, int j)
+		{
+			T temp;
+			temp = resizableArray[i];
+			resizableArray[i] = resizableArray[j];
+			resizableArray[j] = temp;
+		}
+
 		void setHeader(std::string header)
 		{
 			this->header = header;
@@ -213,49 +214,6 @@ class ResizableArray {
 		std::string getHeader()
 		{
 			return this->header;
-		}
-
-		void sort(int col)
-		{
-			this->currentSort = col;
-
-			quickSort(0, numElements - 1);
-		}
-
-		void find(int col, Cell value)
-		{
-			ResizableArray printTheseValues;
-
-			//If the column is already sorted, do a modified binary search
-			if(col == currentSort)
-			{
-				binarySearch(value, col, 0, numElements - 1, printTheseValues);
-			}
-			else //Otherwise do a linear search
-			{
-				for(int i = 0; i < numElements; ++i)
-				{
-					if(resizableArray[i].getCell(col) == value)
-					{
-						printTheseValues.add(resizableArray[i]);
-					}
-				}
-			}
-
-			if(printTheseValues.getNumElements() > 0)
-			{
-				//Print the header
-				std::cout << this->header << std::endl;
-
-				//Loop through and print each match
-				for(int i = 0; i < printTheseValues.getNumElements(); ++i)
-				{
-					std::cout << printTheseValues.get(i) << std::endl;
-				}
-
-				//Tell the user how many eclipses were found
-				std::cout << "Eclipses found: " << printTheseValues.getNumElements() << std::endl;
-			}
 		}
 
 		/**
@@ -286,11 +244,6 @@ class ResizableArray {
 		 * The header at the top of the input file
 		 */
 		std::string header;
-
-		/**
-		 * The index of the column that is currently sorted
-		 */
-		int currentSort;
 
 		/**
 		 * Give the array a new size
@@ -355,85 +308,6 @@ class ResizableArray {
 			}
 		}
 
-
-		void quickSort(int left, int right)
-		{
-			if(left < right)
-			{
-				int pivot = (left + right) / 2;
-
-				int i = left, j = right;
-				Eclipse temp;
-
-				do{
-					while(resizableArray[i].getCell(currentSort) <= resizableArray[pivot].getCell(currentSort) && i < numElements)
-					{
-						++i;
-					}
-
-					while(resizableArray[j].getCell(currentSort) >= resizableArray[pivot].getCell(currentSort) && j >= i)
-					{
-						--j;
-					}
-
-					if(i < j)
-					{
-						temp = resizableArray[i];
-						resizableArray[i] = resizableArray[j];
-						resizableArray[j] = temp;
-					}
-				} while(i < j);
-
-				if(i < pivot)
-				{
-					j = i;
-				}
-
-				temp = resizableArray[pivot];
-				resizableArray[pivot] = resizableArray[j];
-				resizableArray[j] = temp;
-
-				quickSort(left, j-1);
-				quickSort(j+1, right);
-			}
-		}
-
-		void binarySearch(Cell needle, int col, int left, int right, ResizableArray& printArray)
-		{
-			int midpoint = (left + right) / 2;
-
-			if(resizableArray[midpoint].getCell(col) == needle)//Found it!
-			{
-				//Look for duplicates
-				int i = midpoint;
-
-				//Find the start point of the duplicates
-				while(resizableArray[i].getCell(col) == needle && i >= 0)
-				{
-					--i;
-				}
-
-				//Set the index to the first duplicate
-				++i;
-
-				//Go through all the duplicates and add them to the printArray
-				while(resizableArray[i].getCell(col) == needle && i < numElements)
-				{
-					printArray.add(resizableArray[i]);
-					++i;
-				}
-			}
-			else if(resizableArray[midpoint].getCell(col) < needle)
-			{
-				//Cut the array in half to only search the greater elements
-				binarySearch(needle, col, midpoint + 1, right, printArray);
-			}
-			else if(resizableArray[midpoint].getCell(col) > needle)
-			{
-				//Cut the array in half to only look for smaller elements
-				binarySearch(needle, col, left, midpoint - 1, printArray);
-			}
-		}
 };
 
 

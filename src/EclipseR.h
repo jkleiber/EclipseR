@@ -13,7 +13,7 @@
 #include "Eclipse.h"
 #include "FileInput.h"
 #include "ResizableArray.h"
-
+#include "EclipseOperations.h"
 
 void dataInputLoop(ResizableArray<Eclipse>& eclipseDataArray, FileInput& fileInput);
 
