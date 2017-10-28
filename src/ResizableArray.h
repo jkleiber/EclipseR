@@ -23,8 +23,6 @@ class ResizableArray {
 	 */
 	friend std::ostream& operator<<(std::ostream& os, ResizableArray &arr)
 	{
-		os << arr.header << std::endl;
-
 		for(int i = 0; i < arr.numElements; ++i)
 		{
 			os << arr.get(i) << std::endl;
@@ -74,6 +72,14 @@ class ResizableArray {
 		 */
 		void operator=(const ResizableArray &arr)
 		{
+			this->numElements = 0;
+			allocateMemory(arr.arraySize);
+
+			for(int i = 0; i < arr.numElements; ++i)
+			{
+				add(arr.resizableArray[i]);
+			}
+
 			this->arraySize = arr.arraySize;
 			this->resizableArray = arr.resizableArray;
 			this->numElements = arr.numElements;
@@ -121,7 +127,7 @@ class ResizableArray {
 			//IF the next element puts us over allocation, add more memory to the array
 			if((numElements + 1) >= this->arraySize)
 			{
-				this->AllocateMemory(this->arraySize*2);
+				this->allocateMemory(this->arraySize*2);
 			}
 
 			//Add the eclipse to the array
@@ -146,11 +152,11 @@ class ResizableArray {
 			//IF the next element puts us over allocation, add more memory to the array
 			if((numElements + 1) >= this->arraySize)
 			{
-				this->AllocateMemory(this->arraySize*2);
+				this->allocateMemory(this->arraySize*2);
 			}
 
 			//Shift the data to make room for the new data
-			this->ShiftRight(index);
+			this->shiftRight(index);
 
 			//Add the eclipse to the array
 			this->resizableArray[index] = t;
@@ -190,7 +196,7 @@ class ResizableArray {
 			if(index < numElements)
 			{
 				//Overwrite the desired element thus deleting it from the array
-				this->ShiftLeft(index);
+				this->shiftLeft(index);
 
 				//Subtract from numElements
 				--this->numElements;
@@ -198,7 +204,7 @@ class ResizableArray {
 				//If the threshold is now less than half, we should reallocate memory.
 				if((this->numElements + 1) >= (this->arraySize / 2) && (this->numElements) < (this->arraySize / 2))
 				{
-					this->AllocateMemory(this->arraySize / 2);
+					this->allocateMemory(this->arraySize / 2);
 				}
 			}
 		}
@@ -214,24 +220,6 @@ class ResizableArray {
 			temp = resizableArray[i];
 			resizableArray[i] = resizableArray[j];
 			resizableArray[j] = temp;
-		}
-
-		/**
-		 * Sets the information about the array from a data file
-		 * @param header
-		 */
-		void setHeader(std::string header)
-		{
-			this->header = header;
-		}
-
-		/**
-		 * Gets the header from the array
-		 * @return the header of the array
-		 */
-		std::string getHeader()
-		{
-			return this->header;
 		}
 
 		/**
@@ -258,16 +246,12 @@ class ResizableArray {
 		 */
 		int numElements;
 
-		/**
-		 * The header at the top of the input file
-		 */
-		std::string header;
 
 		/**
 		 * Give the array a new size
 		 * @param newSize the new amount of memory to allocate
 		 */
-		void AllocateMemory(int newSize)
+		void allocateMemory(int newSize)
 		{
 			//Allocate a new array for the new size
 			T *newArray = new T[newSize]();
@@ -293,7 +277,7 @@ class ResizableArray {
 		 * Move data on top of deleted data
 		 * @param index the index of the deleted data in the array
 		 */
-		void ShiftLeft(int index)
+		void shiftLeft(int index)
 		{
 
 			//Start with the deleted index
@@ -312,7 +296,7 @@ class ResizableArray {
 		 * Move data on top of deleted data
 		 * @param index the index of the deleted data in the array
 		 */
-		void ShiftRight(int index)
+		void shiftRight(int index)
 		{
 			//Start with the deleted index
 			int i = index;

@@ -11,7 +11,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "ResizableArray.h"
+#include "LinkedList.h"
 
 #include "Cell.h"
 #include "Eclipse.h"
@@ -29,7 +29,13 @@ class FileInput {
 		 * @param eclipseDataArray The array
 		 * @param file The file to load
 		 */
-		void loadFile(ResizableArray<Eclipse>& eclipseDataArray, std::string file);
+		/**
+		 * Alter the eclipse list based on file input
+		 * @param eclipseList the list
+		 * @param file the file
+		 * @param mode 0 if adding data, 1 if removing data
+		 */
+		void loadFile(LinkedList<Eclipse>& eclipseList, std::string file, int mode=0);
 
 		/**
 		 * Gets the number of valid eclipses read
@@ -60,6 +66,25 @@ class FileInput {
 		double convertStrToDouble(std::string str);
 
 		/**
+		 * Sets the information about the array from a data file
+		 * @param header
+		 */
+		void setHeader(std::string header)
+		{
+			this->header = header;
+		}
+
+		/**
+		 * Gets the header from the array
+		 * @return the header of the array
+		 */
+		std::string getHeader()
+		{
+			return this->header;
+		}
+
+
+		/**
 		 * Destructor
 		 */
 		virtual ~FileInput();
@@ -77,6 +102,11 @@ class FileInput {
 		int validElementsRead;
 
 		/**
+		 * The header at the top of the input file
+		 */
+		std::string header;
+
+		/**
 		 * Error checking for each eclipse
 		 * @param eclipse The eclipse to check
 		 * @param dataRow The row of the file the eclipse is on
@@ -90,7 +120,7 @@ class FileInput {
 		 * @param eclipseDataArray Array of all eclipses
 		 * @param row the current row of the file we are on
 		 */
-		void processRow(std::string rawData, ResizableArray<Eclipse> & eclipseDataArray, int row);
+		void processRow(std::string rawData, LinkedList<Eclipse> & eclipseList, int row, int mode);
 
 		/**
 		 * Checks to see if an eclipse's catalog number is unique
@@ -98,7 +128,7 @@ class FileInput {
 		 * @param index The index of the eclipse to consider for uniqueness
 		 * @return -1 if the catalog number is unique, the index of the duplicate if it is repeated
 		 */
-		int isNumberUnique(ResizableArray<Eclipse> eclipseDataArray, Eclipse eclipse);
+		int isNumberUnique(LinkedList<Eclipse> eclipseList, Eclipse eclipse);
 
 		/**
 		 * Checks to see if a character is a number or not

@@ -139,6 +139,27 @@ class Eclipse
 		 */
 		int getRow();
 
+		/**
+		 *
+		 * @param eclipse
+		 * @return
+		 */
+		bool operator<(Eclipse eclipse);
+
+		/**
+		 *
+		 * @param eclipse
+		 * @return
+		 */
+		bool operator==(Eclipse eclipse);
+
+		/**
+		 *
+		 * @param eclipse
+		 * @return
+		 */
+		bool operator!=(Eclipse eclipse);
+
 
 	private:
 

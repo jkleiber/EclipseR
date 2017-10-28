@@ -171,6 +171,21 @@ int Eclipse::getRow()
 	return this->row;
 }
 
+bool Eclipse::operator<(Eclipse eclipse)
+{
+	return this->catalogNum < eclipse.catalogNum;
+}
+
+bool Eclipse::operator==(Eclipse eclipse)
+{
+	return this->catalogNum == eclipse.catalogNum;
+}
+
+bool Eclipse::operator!=(Eclipse eclipse)
+{
+	return this->catalogNum != eclipse.catalogNum;
+}
+
 std::ostream& operator<<(std::ostream& os, Eclipse &eclipse)
 {
 	os << eclipse.rawInput;

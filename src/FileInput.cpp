@@ -28,7 +28,7 @@ int FileInput::getTotal() const
 	return this->totalElementsRead;
 }
 
-void FileInput::loadFile(ResizableArray<Eclipse>& eclipseDataArray, string file)
+void FileInput::loadFile(LinkedList<Eclipse>& eclipseList, string file, int mode)
 {
 	//Count rows of data read to avoid header
 	int totalRows = 0;
@@ -54,7 +54,7 @@ void FileInput::loadFile(ResizableArray<Eclipse>& eclipseDataArray, string file)
 				if(rawData.length() > 0)
 				{
 					//Add data from this row to the array
-					processRow(rawData, eclipseDataArray, totalRows - 9);
+					processRow(rawData, eclipseList, totalRows - 9, mode);
 				}
 			}
 			else
@@ -73,10 +73,10 @@ void FileInput::loadFile(ResizableArray<Eclipse>& eclipseDataArray, string file)
 
 	f.close();
 
-	eclipseDataArray.setHeader(header);
+	setHeader(header);
 }
 
-void FileInput::processRow(string rawData, ResizableArray<Eclipse>& eclipseDataArray, int row)
+void FileInput::processRow(string rawData, LinkedList<Eclipse>& eclipseList, int row, int mode)
 {
 	string cell = "";
 	char lastChar = ' ';
@@ -165,8 +165,6 @@ void FileInput::processRow(string rawData, ResizableArray<Eclipse>& eclipseDataA
 
 	if(isValid(eclipseData, row) == true)
 	{
-		this->validElementsRead++;
-
 		//Add in the fake columns for sorting reasons
 		if(col == 16)
 		{
@@ -177,49 +175,30 @@ void FileInput::processRow(string rawData, ResizableArray<Eclipse>& eclipseDataA
 			eclipseData.addCell(eighteen, 17);
 		}
 
-		int duplicateIndex = isNumberUnique(eclipseDataArray, eclipseData);
-
-		if(duplicateIndex != -1)
+		if(eclipseList.doesValueExist(eclipseData))
 		{
-			try
-			{
-				cerr << "Error in data row " << row << ": Duplicate catalog number " << eclipseData.getCatalogNum() << "." << endl;
-				eclipseDataArray.removeAt(duplicateIndex);
-			}
-			catch(const char* msg)
-			{
-				cout << msg << endl;
-			}
+			cerr << "Error in data row " << row << ": Duplicate catalog number " << eclipseData.getCatalogNum() << "." << endl;
 		}
 
-		//Add the processed eclipse to the array
-		eclipseDataArray.add(eclipseData);
+		if(mode == 0)
+		{
+			//Add the processed eclipse to the array
+			eclipseList.add(eclipseData);
+			this->validElementsRead++;
+		}
+		else if(mode == 1)
+		{
+			if(!eclipseList.remove(eclipseData))
+			{
+				cout << "Catalog number " << eclipseData.getCatalogNum() << " was not found in the list.\n";
+			}
+		}
 	}
 
-	this->totalElementsRead++;
-}
-
-
-int FileInput::isNumberUnique(ResizableArray<Eclipse> eclipseDataArray, Eclipse eclipse)
-{
-	//Search through eclipses to see if any before this eclipse have the same catalog number
-	for(int k = 0; k < eclipseDataArray.getNumElements(); ++k)
+	if(mode == 0)
 	{
-		try
-		{
-			//Only consider it a duplicate if the catalog numbers are the same and the output is valid
-			if(eclipseDataArray.get(k).getCatalogNum() == eclipse.getCatalogNum())
-			{
-				return k;
-			}
-		}
-		catch(const char* msg)
-		{
-			cout << msg << " " << k << endl;
-		}
+		this->totalElementsRead++;
 	}
-
-	return -1;
 }
 
 

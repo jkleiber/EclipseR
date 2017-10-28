@@ -25,7 +25,7 @@ void EclipseOperations::sort(int col, ResizableArray<Eclipse>& resizableArray)
 	quickSort(0, resizableArray.getNumElements() - 1, resizableArray, col);
 }
 
-void EclipseOperations::find(int col, Cell value, ResizableArray<Eclipse>& resizableArray)
+void EclipseOperations::find(int col, Cell value, ResizableArray<Eclipse>& resizableArray, FileInput fileInput)
 {
 	ResizableArray<Eclipse> printTheseValues;
 
@@ -48,7 +48,7 @@ void EclipseOperations::find(int col, Cell value, ResizableArray<Eclipse>& resiz
 	if(printTheseValues.getNumElements() > 0)
 	{
 		//Print the header
-		std::cout << resizableArray.getHeader() << std::endl;
+		std::cout << fileInput.getHeader() << std::endl;
 
 		//Loop through and print each match
 		for(int i = 0; i < printTheseValues.getNumElements(); ++i)
