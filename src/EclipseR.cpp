@@ -32,7 +32,7 @@ int main()
 	dataInputLoop(eclipseList, fileInput);
 
 	//If the user actually gave us files with data, then continue, else exit.
-	if(eclipseList.size() > 0)
+	if(eclipseList.getSize() > 0)
 	{
 		//Manipulate the data however the user wants until the program ends.
 		dataManipLoop(eclipseList, fileInput);
@@ -63,6 +63,10 @@ void dataInputLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 			result = fileInput.loadFile(eclipseList, filename);
 			cout << result << endl;
 		}
+		else
+		{
+			break;
+		}
 	}
 }
 
@@ -77,7 +81,8 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 
 	ResizableArray<Eclipse> eclipseArray;
 
-	eclipseArray = eclipseList.buildArray();
+	//THIS CODE DOES NOT WORK
+	//eclipseArray = eclipseList.buildArray();
 
 	//Stay in the loop until the user presses quit
 	while(userInput != "Q")
@@ -128,7 +133,7 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 				cout << endl;
 				cout << "Data lines read: " << fileInput.getTotal();
 				cout << "; Valid eclipses read: " << fileInput.getNumValid();
-				cout << "; Eclipses in memory: " << eclipseList.size();
+				cout << "; Eclipses in memory: " << eclipseList.getSize();
 				cout << endl;
 			}
 			else //Output to file instead
@@ -139,7 +144,7 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 				outputFile << endl;
 				outputFile << "Data lines read: " << fileInput.getTotal();
 				outputFile << "; Valid eclipses read: " << fileInput.getNumValid();
-				outputFile << "; Eclipses in memory: " << eclipseList.size();
+				outputFile << "; Eclipses in memory: " << eclipseList.getSize();
 				outputFile << endl;
 			}
 		}

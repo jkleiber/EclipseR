@@ -183,7 +183,7 @@ class LinkedList {
 		 *
 		 * @return
 		 */
-		int size()
+		int getSize()
 		{
 			return this->listSize;
 		}
