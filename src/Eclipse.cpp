@@ -176,6 +176,11 @@ bool Eclipse::operator<(Eclipse eclipse)
 	return this->cells[0] < eclipse.cells[0];
 }
 
+bool Eclipse::operator>(Eclipse eclipse)
+{
+	return this->cells[0] > eclipse.cells[0];
+}
+
 bool Eclipse::operator==(Eclipse eclipse)
 {
 	return this->cells[0] == eclipse.cells[0];

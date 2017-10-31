@@ -151,6 +151,13 @@ class Eclipse
 		 * @param eclipse
 		 * @return
 		 */
+		bool operator>(Eclipse eclipse);
+
+		/**
+		 *
+		 * @param eclipse
+		 * @return
+		 */
 		bool operator==(Eclipse eclipse);
 
 		/**

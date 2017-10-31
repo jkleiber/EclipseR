@@ -209,6 +209,14 @@ class ResizableArray {
 			}
 		}
 
+		void clearAll()
+		{
+			while(this->numElements > 0)
+			{
+				this->removeAt(0);
+			}
+		}
+
 		/**
 		 * Swaps two elements at certain indices
 		 * @param i index of element to swap with element at index j

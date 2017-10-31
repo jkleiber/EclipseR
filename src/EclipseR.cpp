@@ -61,7 +61,6 @@ void dataInputLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 		if(filename != "")
 		{
 			result = fileInput.loadFile(eclipseList, filename);
-			cout << result << endl;
 		}
 		else
 		{
@@ -79,10 +78,13 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 	string userInput = "";
 	string filename = "";
 
+	//Did the file load successfully
+	bool fileLoadResult = false;
+
 	ResizableArray<Eclipse> eclipseArray;
 
-	//THIS CODE DOES NOT WORK
-	//eclipseArray = eclipseList.buildArray();
+	//Load Linked List data into array
+	eclipseList.buildArray(eclipseArray);
 
 	//Stay in the loop until the user presses quit
 	while(userInput != "Q")
@@ -129,22 +131,22 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 			if(usingStdout)
 			{
 				cout << fileInput.getHeader() << endl;
-				cout << eclipseList;
+				cout << eclipseArray;
 				cout << endl;
 				cout << "Data lines read: " << fileInput.getTotal();
 				cout << "; Valid eclipses read: " << fileInput.getNumValid();
-				cout << "; Eclipses in memory: " << eclipseList.getSize();
+				cout << "; Eclipses in memory: " << eclipseArray.getNumElements();
 				cout << endl;
 			}
 			else //Output to file instead
 			{
 				outputFile << fileInput.getHeader();
 				outputFile << endl;
-				outputFile << eclipseList;
+				outputFile << eclipseArray;
 				outputFile << endl;
 				outputFile << "Data lines read: " << fileInput.getTotal();
 				outputFile << "; Valid eclipses read: " << fileInput.getNumValid();
-				outputFile << "; Eclipses in memory: " << eclipseList.getSize();
+				outputFile << "; Eclipses in memory: " << eclipseArray.getNumElements();
 				outputFile << endl;
 			}
 		}
@@ -287,7 +289,12 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 			//If the file name is legitimate, load the file
 			if(filename != "")
 			{
-				fileInput.loadFile(eclipseList, filename);
+				fileLoadResult = fileInput.loadFile(eclipseList, filename);
+			}
+
+			if(fileLoadResult)
+			{
+				eclipseList.buildArray(eclipseArray);
 			}
 		}
 		//The user has a file of eclipses they want to remove
@@ -299,7 +306,12 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 			//If the file name is legitimate, load the file
 			if(filename != "")
 			{
-				fileInput.loadFile(eclipseList, filename, 1);
+				fileLoadResult = fileInput.loadFile(eclipseList, filename, 1);
+			}
+
+			if(fileLoadResult)
+			{
+				eclipseList.buildArray(eclipseArray);
 			}
 		}
 		//If the user wants out, leave the loop and exit the program

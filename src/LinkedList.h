@@ -63,23 +63,22 @@ class LinkedList {
 			{
 				while(currentNode != NULL)
 				{
-					if(currentNode->data < t)
+					if(currentNode->data > t || currentNode->data == t)
+					{
+						break;
+					}
+					else
 					{
 						lastNode = currentNode;
 						currentNode = currentNode->next;
 					}
-					else
-					{
-						break;
-					}
 				}
 			}
 
+			//If we are inserting the new node at the end of the list
 			if(currentNode == NULL)
 			{
 				node *newNode = new node;
-
-				std::cout << t << std::endl;
 
 				newNode->data = t;
 				if(head == NULL)
@@ -91,17 +90,27 @@ class LinkedList {
 					lastNode->next = newNode;
 				}
 			}
+			//Replace a duplicate entry
 			else if(currentNode->data == t)
 			{
 				currentNode->data = t;
 			}
+			//Insert into the middle of the list
 			else
 			{
 				node *newNode = new node;
 
 				newNode->data = t;
-				newNode->next = currentNode;
-				lastNode->next = newNode;
+				if(currentNode == head)
+				{
+					newNode->next = head;
+					head = newNode;
+				}
+				else
+				{
+					newNode->next = currentNode;
+					lastNode->next = newNode;
+				}
 			}
 
 			listSize++;
@@ -164,19 +173,22 @@ class LinkedList {
 			return false;
 		}
 
-		ResizableArray<T> buildArray()
+		void buildArray(ResizableArray<T>& array)
 		{
-			ResizableArray<T> array;
+			array.clearAll();
 
 			node *currentNode = new node;
 			currentNode = this->head;
 
-			while(currentNode != NULL)
+			if(currentNode != NULL)
 			{
-				array.add(currentNode->data);
-			}
+				while(currentNode != NULL)
+				{
+					array.add(currentNode->data);
 
-			return array;
+					currentNode = currentNode->next;
+				}
+			}
 		}
 
 		/**
