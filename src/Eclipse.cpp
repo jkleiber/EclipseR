@@ -173,17 +173,17 @@ int Eclipse::getRow()
 
 bool Eclipse::operator<(Eclipse eclipse)
 {
-	return this->catalogNum < eclipse.catalogNum;
+	return this->cells[0] < eclipse.cells[0];
 }
 
 bool Eclipse::operator==(Eclipse eclipse)
 {
-	return this->catalogNum == eclipse.catalogNum;
+	return this->cells[0] == eclipse.cells[0];
 }
 
 bool Eclipse::operator!=(Eclipse eclipse)
 {
-	return this->catalogNum != eclipse.catalogNum;
+	return this->cells[0] != eclipse.cells[0];
 }
 
 std::ostream& operator<<(std::ostream& os, Eclipse &eclipse)

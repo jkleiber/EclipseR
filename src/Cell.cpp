@@ -154,18 +154,23 @@ bool Cell::operator==(Cell c)
 
 bool Cell::operator!=(Cell c)
 {
-	if(cellType == STR_CELL)
+	if(this->cellType == c.cellType)
 	{
-		return strData.compare(c.strData) != 0;
+		if(this->cellType == STR_CELL)
+		{
+			return strData.compare(c.strData) != 0;
+		}
+		else if(this->cellType == INT_CELL)
+		{
+			return intData != c.intData;
+		}
+		else
+		{
+			return floatData != c.floatData;
+		}
 	}
-	else if(cellType == INT_CELL)
-	{
-		return intData != c.intData;
-	}
-	else
-	{
-		return floatData != c.floatData;
-	}
+
+	return false;
 }
 
 bool Cell::operator>(Cell c)

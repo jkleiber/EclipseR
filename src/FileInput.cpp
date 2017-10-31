@@ -28,7 +28,7 @@ int FileInput::getTotal() const
 	return this->totalElementsRead;
 }
 
-void FileInput::loadFile(LinkedList<Eclipse>& eclipseList, string file, int mode)
+bool FileInput::loadFile(LinkedList<Eclipse>& eclipseList, string file, int mode)
 {
 	//Count rows of data read to avoid header
 	int totalRows = 0;
@@ -69,11 +69,14 @@ void FileInput::loadFile(LinkedList<Eclipse>& eclipseList, string file, int mode
 	else
 	{
 		cerr << "File is not available.\n";
+		return false;
 	}
 
 	f.close();
 
 	setHeader(header);
+
+	return true;
 }
 
 void FileInput::processRow(string rawData, LinkedList<Eclipse>& eclipseList, int row, int mode)

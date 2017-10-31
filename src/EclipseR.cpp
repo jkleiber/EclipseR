@@ -48,8 +48,11 @@ void dataInputLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 	//File name to load
 	string filename = " ";
 
+	//Is the file load a success?
+	bool result = false;
+
 	//While the user is entering real filenames
-	while(filename != "")
+	while(!result)
 	{
 		cout << "Enter a data file name: ";
 		getline(cin, filename);
@@ -57,7 +60,8 @@ void dataInputLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 		//If the file name is legitimate, load the file
 		if(filename != "")
 		{
-			fileInput.loadFile(eclipseList, filename);
+			result = fileInput.loadFile(eclipseList, filename);
+			cout << result << endl;
 		}
 	}
 }

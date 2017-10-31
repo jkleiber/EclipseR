@@ -34,8 +34,9 @@ class FileInput {
 		 * @param eclipseList the list
 		 * @param file the file
 		 * @param mode 0 if adding data, 1 if removing data
+		 * @return true if success, false if fail
 		 */
-		void loadFile(LinkedList<Eclipse>& eclipseList, std::string file, int mode=0);
+		bool loadFile(LinkedList<Eclipse>& eclipseList, std::string file, int mode=0);
 
 		/**
 		 * Gets the number of valid eclipses read

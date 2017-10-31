@@ -8,6 +8,7 @@
 #ifndef SRC_CELL_H_
 #define SRC_CELL_H_
 
+#include <iostream>
 #include <string>
 
 /**

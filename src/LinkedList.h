@@ -46,6 +46,8 @@ class LinkedList {
 		LinkedList()
 		{
 			this->head = new node;
+			head = NULL;
+
 			this->listSize = 0;
 		}
 
@@ -57,18 +59,37 @@ class LinkedList {
 			currentNode = this->head;
 			lastNode = this->head;
 
-			while(currentNode->data < t && currentNode != NULL)
+			if(currentNode != NULL)
 			{
-				lastNode = currentNode;
-				currentNode = currentNode->next;
+				while(currentNode != NULL)
+				{
+					if(currentNode->data < t)
+					{
+						lastNode = currentNode;
+						currentNode = currentNode->next;
+					}
+					else
+					{
+						break;
+					}
+				}
 			}
 
 			if(currentNode == NULL)
 			{
 				node *newNode = new node;
 
+				std::cout << t << std::endl;
+
 				newNode->data = t;
-				lastNode->next = newNode;
+				if(head == NULL)
+				{
+					head = newNode;
+				}
+				else
+				{
+					lastNode->next = newNode;
+				}
 			}
 			else if(currentNode->data == t)
 			{
@@ -125,19 +146,22 @@ class LinkedList {
 			node *currentNode = new node;
 			currentNode = head;
 
-			while(currentNode->data != t && currentNode != NULL)
+			if(currentNode != NULL)
 			{
-				currentNode = currentNode->next;
+				while((currentNode != NULL))
+				{
+					if(currentNode->data != t)
+					{
+						currentNode = currentNode->next;
+					}
+					else
+					{
+						return true;
+					}
+				}
 			}
 
-			if(currentNode == NULL)
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
+			return false;
 		}
 
 		ResizableArray<T> buildArray()
