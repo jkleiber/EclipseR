@@ -121,8 +121,9 @@ void FileInput::processRow(string rawData, LinkedList<Eclipse>& eclipseList, int
 					Cell c(num);
 					eclipseData.addCell(c, col);
 				}
-				catch(...)
+				catch(const char* msg)
 				{
+					//std::cout << msg << std::endl;
 					eclipseData.addError(col);
 				}
 			}
@@ -166,7 +167,7 @@ void FileInput::processRow(string rawData, LinkedList<Eclipse>& eclipseList, int
 	//Set the number of columns in the eclipse
 	eclipseData.setNumColumns(col);
 
-	if(isValid(eclipseData, row) == true)
+	if(isValid(eclipseData, row, mode) == true)
 	{
 		//Add in the fake columns for sorting reasons
 		if(col == 16)
@@ -178,14 +179,14 @@ void FileInput::processRow(string rawData, LinkedList<Eclipse>& eclipseList, int
 			eclipseData.addCell(eighteen, 17);
 		}
 
-		if(eclipseList.doesValueExist(eclipseData))
+		if(mode == 0 && eclipseList.doesValueExist(eclipseData))
 		{
 			cerr << "Error in data row " << row << ": Duplicate catalog number " << eclipseData.getCatalogNum() << "." << endl;
 		}
 
 		if(mode == 0)
 		{
-			//Add the processed eclipse to the array
+			//Add the processed eclipse to the list
 			eclipseList.add(eclipseData);
 			this->validElementsRead++;
 		}
@@ -205,29 +206,41 @@ void FileInput::processRow(string rawData, LinkedList<Eclipse>& eclipseList, int
 }
 
 
-bool FileInput::isValid(Eclipse eclipse, int dataRow)
+bool FileInput::isValid(Eclipse eclipse, int dataRow, int mode)
 {
 	/* Check to see if eclipse type matches column numbers */
+
 
 	//If an eclipse is partial, it should have exactly 16 columns
 	if(eclipse.getEclipseType()[0] == 'P' && eclipse.getNumColumns() != 16)
 	{
-		cerr << "Error in data row " << dataRow << ": " << eclipse.getNumColumns() << " columns found. ";
-		cerr << "Should be 16.\n";
+		//Only display errors if we are adding eclipses
+		if(mode == 0)
+		{
+			cerr << "Error in data row " << dataRow << ": " << eclipse.getNumColumns() << " columns found. ";
+			cerr << "Should be 16.\n";
+		}
 
 		return false;
 	}
 	//If an eclipse is not partial, it should have exactly 18 columns
 	else if(eclipse.getEclipseType()[0] != 'P' && eclipse.getNumColumns() != 18)
 	{
-		cerr << "Error in data row " << dataRow << ": " << eclipse.getNumColumns() << " columns found. ";
-		cerr << "Should be 18.\n";
+		//Only display errors if we are adding eclipses
+		if(mode == 0)
+		{
+			cerr << "Error in data row " << dataRow << ": " << eclipse.getNumColumns() << " columns found. ";
+			cerr << "Should be 18.\n";
+		}
 
 		return false;
 	}
 	else if(eclipse.getNumErrors() > 0)
 	{
-		eclipse.printAllErrors();
+		if(mode == 0)
+		{
+			eclipse.printAllErrors();
+		}
 		return false;
 	}
 

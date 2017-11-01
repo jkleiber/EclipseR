@@ -171,22 +171,22 @@ int Eclipse::getRow()
 	return this->row;
 }
 
-bool Eclipse::operator<(Eclipse eclipse)
+bool Eclipse::operator<(const Eclipse& eclipse)
 {
 	return this->cells[0] < eclipse.cells[0];
 }
 
-bool Eclipse::operator>(Eclipse eclipse)
+bool Eclipse::operator>(const Eclipse& eclipse)
 {
 	return this->cells[0] > eclipse.cells[0];
 }
 
-bool Eclipse::operator==(Eclipse eclipse)
+bool Eclipse::operator==(const Eclipse& eclipse)
 {
 	return this->cells[0] == eclipse.cells[0];
 }
 
-bool Eclipse::operator!=(Eclipse eclipse)
+bool Eclipse::operator!=(const Eclipse& eclipse)
 {
 	return this->cells[0] != eclipse.cells[0];
 }

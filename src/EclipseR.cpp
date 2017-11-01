@@ -84,13 +84,13 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 	ResizableArray<Eclipse> eclipseArray;
 
 	//Load Linked List data into array
-	eclipseList.buildArray(eclipseArray);
+	eclipseArray = eclipseList.buildArray();
 
 	//Stay in the loop until the user presses quit
 	while(userInput != "Q")
 	{
 		//Ask for user input
-		cout << "(O)utput, (S)ort, (F)ind, (M)erge, (P)urge, or (Q)uit?\n";
+		cout << "(O)utput, (S)ort, (F)ind, (M)erge, (P)urge, (C)atalog Order, or (Q)uit?\n";
 		getline(cin, userInput);
 
 		//If the user wants to output the list:
@@ -294,7 +294,7 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 
 			if(fileLoadResult)
 			{
-				eclipseList.buildArray(eclipseArray);
+				eclipseArray = eclipseList.buildArray();
 			}
 		}
 		//The user has a file of eclipses they want to remove
@@ -311,8 +311,64 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 
 			if(fileLoadResult)
 			{
-				eclipseList.buildArray(eclipseArray);
+				eclipseArray = eclipseList.buildArray();
 			}
+		}
+		else if(userInput == "C")
+		{
+			ofstream outputFile;
+						string outputUserInput = "";
+						bool usingStdout = false;
+
+						//Until the user enters an available file, or no file, ask for more input
+						while(true)
+						{
+							cout << "Enter the name of an output file: ";
+							getline(cin, outputUserInput);
+
+							//They entered nothing: use stdout
+							if(outputUserInput == "")
+							{
+								usingStdout = true;
+								break;
+							}
+							else
+							{
+								outputFile.open(outputUserInput.c_str());
+							}
+
+							if(outputFile.good())
+							{
+								break;
+							}
+							else
+							{
+								cerr << "File is not available.\n";
+							}
+						}
+
+						//Output to stdout if it was selected
+						if(usingStdout)
+						{
+							cout << fileInput.getHeader() << endl;
+							cout << eclipseList;
+							cout << endl;
+							cout << "Data lines read: " << fileInput.getTotal();
+							cout << "; Valid eclipses read: " << fileInput.getNumValid();
+							cout << "; Eclipses in memory: " << eclipseList.getSize();
+							cout << endl;
+						}
+						else //Output to file instead
+						{
+							outputFile << fileInput.getHeader();
+							outputFile << endl;
+							outputFile << eclipseList;
+							outputFile << endl;
+							outputFile << "Data lines read: " << fileInput.getTotal();
+							outputFile << "; Valid eclipses read: " << fileInput.getNumValid();
+							outputFile << "; Eclipses in memory: " << eclipseList.getSize();
+							outputFile << endl;
+						}
 		}
 		//If the user wants out, leave the loop and exit the program
 		else if(userInput == "Q")

@@ -79,42 +79,42 @@ class Cell {
 		 * @param c Cell to compare
 		 * @return this Cell < Cell c?
 		 */
-		bool operator<(Cell c);
+		bool operator<(const Cell& c);
 
 		/**
 		 * Equals comparator
 		 * @param c Cell to compare
 		 * @return this Cell == Cell c
 		 */
-		bool operator==(Cell c);
+		bool operator==(const Cell& c);
 
 		/**
 		 * Not equals comparator
 		 * @param c Cell to compare
 		 * @return this Cell != Cell c
 		 */
-		bool operator!=(Cell c);
+		bool operator!=(const Cell& c);
 
 		/**
 		 * Greater than comparator
 		 * @param c Cell to compare
 		 * @return this Cell > Cell c
 		 */
-		bool operator>(Cell c);
+		bool operator>(const Cell& c);
 
 		/**
 		 * Greater than or equal comparator
 		 * @param c Cell to compare
 		 * @return this Cell >= Cell c
 		 */
-		bool operator>=(Cell c);
+		bool operator>=(const Cell& c);
 
 		/**
 		 * Less than or equal comparator
 		 * @param c Cell to compare
 		 * @return this Cell <= Cell c
 		 */
-		bool operator<=(Cell c);
+		bool operator<=(const Cell& c);
 
 		/**
 		 * Destructor

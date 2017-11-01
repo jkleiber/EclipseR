@@ -122,7 +122,7 @@ class ResizableArray {
 		 * Adds an element to the array
 		 * @param eclipseData the element to add
 		 */
-		void add(T t)
+		void add(T& t)
 		{
 			//IF the next element puts us over allocation, add more memory to the array
 			if((numElements + 1) >= this->arraySize)
@@ -206,14 +206,6 @@ class ResizableArray {
 				{
 					this->allocateMemory(this->arraySize / 2);
 				}
-			}
-		}
-
-		void clearAll()
-		{
-			while(this->numElements > 0)
-			{
-				this->removeAt(0);
 			}
 		}
 

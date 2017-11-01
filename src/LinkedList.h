@@ -11,6 +11,9 @@
 #include <iostream>
 #include "ResizableArray.h"
 
+/**
+ *
+ */
 template<class T>
 class LinkedList {
 
@@ -43,6 +46,9 @@ class LinkedList {
 	}
 
 	public:
+		/**
+		 * Constructor of the linked list. Sets the head pointer to NULL for later additions
+		 */
 		LinkedList()
 		{
 			this->head = new node;
@@ -51,27 +57,31 @@ class LinkedList {
 			this->listSize = 0;
 		}
 
+		/**
+		 * Adds an element to the list
+		 * @param t the element to add
+		 */
 		void add(T t)
 		{
 			node *currentNode = new node;
 			node *lastNode = new node;
 
+			//start from the head node
 			currentNode = this->head;
 			lastNode = this->head;
 
-			if(currentNode != NULL)
+			//while we haven't reached the end of the list
+			while(currentNode != NULL)
 			{
-				while(currentNode != NULL)
+				//stop looking for the insert location if it has been found
+				if(currentNode->data > t || currentNode->data == t)
 				{
-					if(currentNode->data > t || currentNode->data == t)
-					{
-						break;
-					}
-					else
-					{
-						lastNode = currentNode;
-						currentNode = currentNode->next;
-					}
+					break;
+				}
+				else //iterate
+				{
+					lastNode = currentNode;
+					currentNode = currentNode->next;
 				}
 			}
 
@@ -81,7 +91,7 @@ class LinkedList {
 				node *newNode = new node;
 
 				newNode->data = t;
-				if(head == NULL)
+				if(head == NULL)//special case for empty list
 				{
 					head = newNode;
 				}
@@ -101,7 +111,7 @@ class LinkedList {
 				node *newNode = new node;
 
 				newNode->data = t;
-				if(currentNode == head)
+				if(currentNode == head)//special case for insert at front
 				{
 					newNode->next = head;
 					head = newNode;
@@ -113,13 +123,14 @@ class LinkedList {
 				}
 			}
 
+			//increment list size
 			listSize++;
 		}
 
 		/**
-		 *
-		 * @param t
-		 * @return
+		 * Removes an element from the list
+		 * @param t the element to remove
+		 * @return true if the element was removed. false if not removed
 		 */
 		bool remove(T t)
 		{
@@ -129,20 +140,40 @@ class LinkedList {
 			currentNode = this->head;
 			lastNode = this->head;
 
-			while(currentNode->data < t && currentNode != NULL)
+			while(currentNode != NULL)
 			{
-				lastNode = currentNode;
-				currentNode = currentNode->next;
+				if(currentNode->data < t)
+				{
+					lastNode = currentNode;
+					currentNode = currentNode->next;
+				}
+				else
+				{
+					break;
+				}
 			}
 
 			//If the end of the list was not reached
 			if(currentNode != NULL)
 			{
+				node *throwaway = new node;
+
 				//was the element found?
 				if(currentNode->data == t)
 				{
-					lastNode->next = currentNode->next;
+					if(currentNode == head)
+					{
+						throwaway = head;
+						head = head->next;
+					}
+					else
+					{
+						throwaway = currentNode;
+						lastNode->next = currentNode->next;
+					}
 					listSize--;
+
+					delete throwaway; //Free the deleted node from memory
 
 					return true;
 				}
@@ -150,49 +181,56 @@ class LinkedList {
 			return false;
 		}
 
+		/**
+		 * Checks to see if an element exists in the list
+		 * @param t the element to look for
+		 * @return true if found, false if not found
+		 */
 		bool doesValueExist(T t)
 		{
 			node *currentNode = new node;
 			currentNode = head;
 
-			if(currentNode != NULL)
+			//look for t until it is found or the end of the list is reached
+			while((currentNode != NULL))
 			{
-				while((currentNode != NULL))
+				if(currentNode->data != t)
 				{
-					if(currentNode->data != t)
-					{
-						currentNode = currentNode->next;
-					}
-					else
-					{
-						return true;
-					}
+					currentNode = currentNode->next;
+				}
+				else
+				{
+					return true;
 				}
 			}
 
 			return false;
 		}
 
-		void buildArray(ResizableArray<T>& array)
+		/**
+		 * Converts the list into an array
+		 * @return the resizable array created from the linked list
+		 */
+		ResizableArray<T> buildArray()
 		{
-			array.clearAll();
+			ResizableArray<T> array(listSize);
 
 			node *currentNode = new node;
 			currentNode = this->head;
 
-			if(currentNode != NULL)
+			//go through the whole list
+			while(currentNode != NULL)
 			{
-				while(currentNode != NULL)
-				{
-					array.add(currentNode->data);
+				array.add(currentNode->data);
 
-					currentNode = currentNode->next;
-				}
+				currentNode = currentNode->next;
 			}
+
+			return array;
 		}
 
 		/**
-		 *
+		 * Gives the size of the list
 		 * @return
 		 */
 		int getSize()
@@ -200,16 +238,29 @@ class LinkedList {
 			return this->listSize;
 		}
 
+		/**
+		 * Frees all the nodes from memory
+		 */
 		virtual ~LinkedList()
 		{
-
+			node* currentNode = head;
+			while(currentNode != NULL)
+			{
+				head = currentNode->next;
+				delete currentNode;
+				currentNode = head;
+			}
 		}
 
 	private:
-
+		/**
+		 * The head node of the list
+		 */
 		node *head;
 
-
+		/**
+		 * the size of the list
+		 */
 		int listSize;
 };
 

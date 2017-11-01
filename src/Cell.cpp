@@ -94,7 +94,7 @@ Cell::Cell(int data, bool isMax)
 	this->isMax = isMax;
 }
 
-bool Cell::operator<(Cell c)
+bool Cell::operator<(const Cell& c)
 {
 	if(cellType == STR_CELL)
 	{
@@ -136,7 +136,7 @@ bool Cell::operator<(Cell c)
 	}
 }
 
-bool Cell::operator==(Cell c)
+bool Cell::operator==(const Cell& c)
 {
 	if(cellType == STR_CELL)
 	{
@@ -152,7 +152,7 @@ bool Cell::operator==(Cell c)
 	}
 }
 
-bool Cell::operator!=(Cell c)
+bool Cell::operator!=(const Cell& c)
 {
 	if(this->cellType == c.cellType)
 	{
@@ -173,7 +173,7 @@ bool Cell::operator!=(Cell c)
 	return false;
 }
 
-bool Cell::operator>(Cell c)
+bool Cell::operator>(const Cell& c)
 {
 	if(cellType == STR_CELL)
 	{
@@ -215,7 +215,7 @@ bool Cell::operator>(Cell c)
 	}
 }
 
-bool Cell::operator>=(Cell c)
+bool Cell::operator>=(const Cell& c)
 {
 	if(this->cellType == STR_CELL)
 	{
@@ -257,7 +257,7 @@ bool Cell::operator>=(Cell c)
 	}
 }
 
-bool Cell::operator<=(Cell c)
+bool Cell::operator<=(const Cell& c)
 {
 	if(cellType == STR_CELL)
 	{

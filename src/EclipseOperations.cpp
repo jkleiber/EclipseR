@@ -8,7 +8,7 @@
 #include "EclipseOperations.h"
 
 EclipseOperations::EclipseOperations() {
-	this->currentSort = -1;
+	this->currentSort = 1;
 
 }
 
@@ -170,4 +170,8 @@ void EclipseOperations::binarySearch(Cell needle, int col, int left, int right, 
 	}
 }
 
+void EclipseOperations::setSortedColumn(int col)
+{
+	this->currentSort = col;
+}
 

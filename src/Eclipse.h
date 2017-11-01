@@ -144,28 +144,28 @@ class Eclipse
 		 * @param eclipse
 		 * @return
 		 */
-		bool operator<(Eclipse eclipse);
+		bool operator<(const Eclipse& eclipse);
 
 		/**
 		 *
 		 * @param eclipse
 		 * @return
 		 */
-		bool operator>(Eclipse eclipse);
+		bool operator>(const Eclipse& eclipse);
 
 		/**
 		 *
 		 * @param eclipse
 		 * @return
 		 */
-		bool operator==(Eclipse eclipse);
+		bool operator==(const Eclipse& eclipse);
 
 		/**
 		 *
 		 * @param eclipse
 		 * @return
 		 */
-		bool operator!=(Eclipse eclipse);
+		bool operator!=(const Eclipse& eclipse);
 
 
 	private:

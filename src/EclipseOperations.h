@@ -40,6 +40,12 @@ class EclipseOperations {
 		void find(int col, Cell value, ResizableArray<Eclipse>& resizableArray, FileInput fileInput);
 
 		/**
+		 *
+		 * @param col
+		 */
+		void setSortedColumn(int col);
+
+		/**
 		 * Destructor
 		 */
 		virtual ~EclipseOperations();
