@@ -16,7 +16,9 @@
 #include "Cell.h"
 #include "Eclipse.h"
 
-
+/**
+ * Class used to handle file input, as well as remove some eclipses from the linked list
+ */
 class FileInput {
 	public:
 		/**
