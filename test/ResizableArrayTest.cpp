@@ -1,17 +1,14 @@
 /*
- * UnitTests.cpp
+ * ResizableArrayTest.cpp
  *
- *  Created on: Sep 18, 2017
+ *  Created on: Nov 2, 2017
  *      Author: justin
  */
 
-#include "UnitTests.h"
-
+#include "ResizableArrayTest.h"
 using namespace std;
 
-UnitTests::UnitTests()
-{
-	cout << "Beginning Tests:\n";
+ResizableArrayTest::ResizableArrayTest() {
 
 	//Default Constructor test
 	ResizableArray<Eclipse> eda1;
@@ -31,7 +28,7 @@ UnitTests::UnitTests()
 	ResizableArray<Eclipse> addTestArray;
 	Eclipse eD;
 	addTestArray.add(eD);
-	if(!doesAddGetWork(eda2, eD))
+	if(!doesAddGetWork(addTestArray, eD))
 	{
 		cout << "\tFAIL: Add/Get Element Test\n";
 	}
@@ -83,7 +80,7 @@ UnitTests::UnitTests()
 	//RemoveAt
 	try{
 		dataArray3.removeAt(5);
-		cout << "\tFAIL: Out of Range Test 1\n";
+		cout << "\tFAIL: Out of Range Test 2\n";
 	}
 	catch(const char* e)
 	{
@@ -94,19 +91,18 @@ UnitTests::UnitTests()
 	Eclipse z;
 	try{
 		dataArray3.addAt(z, 5);
-		cout << "\tFAIL: Out of Range Test 1\n";
+		cout << "\tFAIL: Out of Range Test 3\n";
 	}
 	catch(const char* e)
 	{
 
 	}
 
-
-	cout << "Testing Complete!\n";
 }
 
 
-bool UnitTests::doesDefaultConstructorWork(ResizableArray<Eclipse> eda)
+
+bool ResizableArrayTest::doesDefaultConstructorWork(ResizableArray<Eclipse> eda)
 {
 	if(eda.getNumElements() != 0 || eda.size() != 10)
 	{
@@ -115,7 +111,7 @@ bool UnitTests::doesDefaultConstructorWork(ResizableArray<Eclipse> eda)
 	return true;
 }
 
-bool UnitTests::doesOtherConstructorWork(ResizableArray<Eclipse> eda, int size)
+bool ResizableArrayTest::doesOtherConstructorWork(ResizableArray<Eclipse> eda, int size)
 {
 	if(eda.getNumElements() != 0 || eda.size() != size)
 	{
@@ -124,7 +120,7 @@ bool UnitTests::doesOtherConstructorWork(ResizableArray<Eclipse> eda, int size)
 	return true;
 }
 
-bool UnitTests::doesAddGetWork(ResizableArray<Eclipse> eda, Eclipse eD)
+bool ResizableArrayTest::doesAddGetWork(ResizableArray<Eclipse> eda, Eclipse eD)
 {
 	if(eda.get(0).equals(eD))
 	{
@@ -132,3 +128,9 @@ bool UnitTests::doesAddGetWork(ResizableArray<Eclipse> eda, Eclipse eD)
 	}
 	return false;
 }
+
+
+ResizableArrayTest::~ResizableArrayTest() {
+	// TODO Auto-generated destructor stub
+}
+

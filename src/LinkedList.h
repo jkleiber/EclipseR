@@ -12,7 +12,7 @@
 #include "ResizableArray.h"
 
 /**
- *
+ * Class that manages a linked list of any type, and keeps it in a sorted order
  */
 template<class T>
 class LinkedList {
@@ -179,6 +179,38 @@ class LinkedList {
 				}
 			}
 			return false;
+		}
+
+		/**
+		 * Gets the value at the specified position in the list
+		 * @param position the position to get from the list
+		 * @return the element in the list. NULL if OOB
+		 */
+		T& get(int position)
+		{
+			int i = 0;
+			node *currentNode = new node;
+			currentNode = head;
+
+			while(currentNode != NULL)
+			{
+				if(i == position)
+				{
+					break;
+				}
+
+				currentNode = currentNode->next;
+				++i;
+			}
+
+			if(currentNode != NULL)
+			{
+				return currentNode->data;
+			}
+
+			std::cout << i << std::endl;
+
+			throw("LinkedList::get(): Index out of range");
 		}
 
 		/**

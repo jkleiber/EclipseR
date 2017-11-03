@@ -4,29 +4,23 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/Cell.cpp \
-../src/Eclipse.cpp \
-../src/EclipseOperations.cpp \
-../src/EclipseR.cpp \
-../src/FileInput.cpp 
+../test/LinkedListTest.cpp \
+../test/ResizableArrayTest.cpp \
+../test/UnitTests.cpp 
 
 OBJS += \
-./src/Cell.o \
-./src/Eclipse.o \
-./src/EclipseOperations.o \
-./src/EclipseR.o \
-./src/FileInput.o 
+./test/LinkedListTest.o \
+./test/ResizableArrayTest.o \
+./test/UnitTests.o 
 
 CPP_DEPS += \
-./src/Cell.d \
-./src/Eclipse.d \
-./src/EclipseOperations.d \
-./src/EclipseR.d \
-./src/FileInput.d 
+./test/LinkedListTest.d \
+./test/ResizableArrayTest.d \
+./test/UnitTests.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-src/%.o: ../src/%.cpp
+test/%.o: ../test/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"

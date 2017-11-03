@@ -12,7 +12,7 @@
 
 #include "EclipseR.h"
 
-#include "UnitTests.h"
+#include "../test/UnitTests.h"
 
 using namespace std;
 
@@ -292,6 +292,7 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 				fileLoadResult = fileInput.loadFile(eclipseList, filename);
 			}
 
+			//Only update the array if needed (if the file is not available, no need to reload)
 			if(fileLoadResult)
 			{
 				eclipseArray = eclipseList.buildArray();
@@ -309,66 +310,68 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 				fileLoadResult = fileInput.loadFile(eclipseList, filename, 1);
 			}
 
+			//Only update the array if needed (if the file is not available, no need to reload)
 			if(fileLoadResult)
 			{
 				eclipseArray = eclipseList.buildArray();
 			}
 		}
+		//Output by catalog number (i.e. output the linked list)
 		else if(userInput == "C")
 		{
 			ofstream outputFile;
-						string outputUserInput = "";
-						bool usingStdout = false;
+			string outputUserInput = "";
+			bool usingStdout = false;
 
-						//Until the user enters an available file, or no file, ask for more input
-						while(true)
-						{
-							cout << "Enter the name of an output file: ";
-							getline(cin, outputUserInput);
+			//Until the user enters an available file, or no file, ask for more input
+			while(true)
+			{
+				cout << "Enter the name of an output file: ";
+				getline(cin, outputUserInput);
 
-							//They entered nothing: use stdout
-							if(outputUserInput == "")
-							{
-								usingStdout = true;
-								break;
-							}
-							else
-							{
-								outputFile.open(outputUserInput.c_str());
-							}
+				//They entered nothing: use stdout
+				if(outputUserInput == "")
+				{
+					usingStdout = true;
+					break;
+				}
+				else
+				{
+					outputFile.open(outputUserInput.c_str());
+				}
 
-							if(outputFile.good())
-							{
-								break;
-							}
-							else
-							{
-								cerr << "File is not available.\n";
-							}
-						}
+				if(outputFile.good())
+				{
+					break;
+				}
+				else
+				{
+					cerr << "File is not available.\n";
+				}
+			}
 
-						//Output to stdout if it was selected
-						if(usingStdout)
-						{
-							cout << fileInput.getHeader() << endl;
-							cout << eclipseList;
-							cout << endl;
-							cout << "Data lines read: " << fileInput.getTotal();
-							cout << "; Valid eclipses read: " << fileInput.getNumValid();
-							cout << "; Eclipses in memory: " << eclipseList.getSize();
-							cout << endl;
-						}
-						else //Output to file instead
-						{
-							outputFile << fileInput.getHeader();
-							outputFile << endl;
-							outputFile << eclipseList;
-							outputFile << endl;
-							outputFile << "Data lines read: " << fileInput.getTotal();
-							outputFile << "; Valid eclipses read: " << fileInput.getNumValid();
-							outputFile << "; Eclipses in memory: " << eclipseList.getSize();
-							outputFile << endl;
-						}
+			//Output to stdout if it was selected
+			if(usingStdout)
+			{
+				cout << fileInput.getHeader() << endl;
+				cout << eclipseList;
+				cout << endl;
+				cout << "Data lines read: " << fileInput.getTotal();
+				cout << "; Valid eclipses read: " << fileInput.getNumValid();
+				cout << "; Eclipses in memory: " << eclipseList.getSize();
+				cout << endl;
+			}
+			else //Output to file instead
+			{
+				outputFile << fileInput.getHeader();
+				outputFile << endl;
+				outputFile << eclipseList;
+				outputFile << endl;
+				outputFile << "Data lines read: " << fileInput.getTotal();
+				outputFile << "; Valid eclipses read: " << fileInput.getNumValid();
+				outputFile << "; Eclipses in memory: " << eclipseList.getSize();
+				outputFile << endl;
+			}
 		}
 		//If the user wants out, leave the loop and exit the program
 		else if(userInput == "Q")

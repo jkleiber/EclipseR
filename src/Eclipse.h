@@ -11,6 +11,9 @@
 #include <string>
 #include "Cell.h"
 
+/**
+ * Class that defines data from an eclipse
+ */
 class Eclipse
 {
 	/**
@@ -33,7 +36,10 @@ class Eclipse
 		 */
 		Eclipse(Eclipse &eclipseData);
 
-
+		/**
+		 * Copy assignment operator
+		 * @param eclipse the eclipse set this one equal to
+		 */
 		void operator=(const Eclipse &eclipse);
 
 		/**
@@ -140,30 +146,30 @@ class Eclipse
 		int getRow();
 
 		/**
-		 *
-		 * @param eclipse
-		 * @return
+		 * Determines if this eclipse has a lower catalog number than another
+		 * @param eclipse the other eclipse
+		 * @return true if this catalog number is less than the other
 		 */
 		bool operator<(const Eclipse& eclipse);
 
 		/**
-		 *
-		 * @param eclipse
-		 * @return
+		 * Determines if this eclipse's catalog number is greater than another's
+		 * @param eclipse the other eclipse
+		 * @return true if this eclipse's catalognumber is greater
 		 */
 		bool operator>(const Eclipse& eclipse);
 
 		/**
-		 *
-		 * @param eclipse
-		 * @return
+		 * Checks to see if two eclipses are equal
+		 * @param eclipse the othe eclipse
+		 * @return true if equal
 		 */
 		bool operator==(const Eclipse& eclipse);
 
 		/**
-		 *
-		 * @param eclipse
-		 * @return
+		 * Checks to see if two eclipses are not equal
+		 * @param eclipse another eclipse
+		 * @return true if not equal
 		 */
 		bool operator!=(const Eclipse& eclipse);
 

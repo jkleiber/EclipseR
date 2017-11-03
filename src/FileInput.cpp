@@ -194,7 +194,7 @@ void FileInput::processRow(string rawData, LinkedList<Eclipse>& eclipseList, int
 		{
 			if(!eclipseList.remove(eclipseData))
 			{
-				cout << "Catalog number " << eclipseData.getCatalogNum() << " was not found in the list.\n";
+				cerr << "Catalog number " << eclipseData.getCatalogNum() << " was not found in the list.\n";
 			}
 		}
 	}

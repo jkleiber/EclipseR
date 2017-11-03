@@ -12,6 +12,9 @@
 
 #include "Eclipse.h"
 
+/**
+ * Class that manages a dynamic array, and can be sorted or searched on.
+ */
 template<class T>
 class ResizableArray {
 
