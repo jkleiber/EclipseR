@@ -57,6 +57,23 @@ class LinkedList {
 			this->listSize = 0;
 		}
 
+		void operator=(LinkedList<T> linkedList)
+		{
+			node* currentNode = head;
+			node* throwaway = new node;
+
+			while(currentNode != NULL)
+			{
+				throwaway = currentNode;
+				currentNode = currentNode->next;
+				delete throwaway;
+			}
+
+			this->head = linkedList.head;
+
+			this->listSize = linkedList.listSize;
+		}
+
 		/**
 		 * Adds an element to the list
 		 * @param t the element to add
@@ -211,6 +228,23 @@ class LinkedList {
 			std::cout << i << std::endl;
 
 			throw("LinkedList::get(): Index out of range");
+		}
+
+		T& search(T key)
+		{
+			node* currentNode = head;
+
+			while(currentNode != NULL)
+			{
+				if(currentNode->data == key)
+				{
+					return currentNode->data;
+				}
+
+				currentNode = currentNode->next;
+			}
+
+			return NULL;
 		}
 
 		/**

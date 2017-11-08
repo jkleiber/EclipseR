@@ -225,12 +225,27 @@ class ResizableArray {
 			resizableArray[j] = temp;
 		}
 
+		void clearAll()
+		{
+			for(int i = 0; i < this->numElements; ++i)
+			{
+				removeAt(0);
+			}
+		}
+
 		/**
 		 * Destructor
 		 */
 		virtual ~ResizableArray()
 		{
 			//delete [] this->resizableArray;
+		}
+
+	protected:
+
+		void resize(int newSize)
+		{
+			this->allocateMemory(newSize);
 		}
 
 	private:
@@ -259,8 +274,11 @@ class ResizableArray {
 			//Allocate a new array for the new size
 			T *newArray = new T[newSize]();
 
+			//Figure out what length of the array should be copied
+			int len = newSize < this->numElements ? newSize : this->numElements;
+
 			//Copy elements from the old array to the new array
-			for(int i = 0; i < this->numElements; ++i)
+			for(int i = 0; i < len; ++i)
 			{
 				newArray[i] = this->resizableArray[i];
 			}
