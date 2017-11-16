@@ -417,11 +417,13 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 				outputFile << endl;
 			}
 		}
+		//Linked display
 		else if(userInput == "L")
 		{
 			//Output insertion order to standard output
 			cout << eclipseHashTable.getInsertionOrder() << endl;
 		}
+		//Hash display
 		else if(userInput == "H")
 		{
 			//Output the hash table to standard output

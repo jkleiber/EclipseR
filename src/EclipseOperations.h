@@ -16,7 +16,7 @@
 #include "Cell.h"
 
 /**
- * Class used to sort and search the resizable aray of eclipses
+ * Class used to sort and search the resizable array of eclipses
  */
 class EclipseOperations {
 	public:
@@ -41,8 +41,8 @@ class EclipseOperations {
 		void find(int col, Cell value, ResizableArray<Eclipse>& resizableArray,  LinkedHashTable<Eclipse>& hashTable, FileInput fileInput);
 
 		/**
-		 *
-		 * @param col
+		 * Sets the sorted column to a different one
+		 * @param col the column that is actually sorted
 		 */
 		void setSortedColumn(int col);
 

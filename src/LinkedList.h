@@ -60,6 +60,10 @@ class LinkedList {
 			this->listSize = 0;
 		}
 
+		/**
+		 * Copy assignment operator
+		 * @param linkedList the linked list to copy
+		 */
 		void operator=(LinkedList<T> linkedList)
 		{
 			node* currentNode = head;
@@ -151,6 +155,10 @@ class LinkedList {
 			listSize++;
 		}
 
+		/**
+		 * Adds an item to the tail of the linked list
+		 * @param t the item to add
+		 */
 		void append(T &t)
 		{
 			node* newNode = new node;
@@ -261,9 +269,10 @@ class LinkedList {
 		}
 
 		/**
-		 *
-		 * @param id
-		 * @return
+		 * Searches the linked list for a particular value and returns it
+		 * @param id value to search for
+		 * @return the item found
+		 * @throws an exception if nothing is found
 		 */
 		T& search(T id)
 		{
@@ -339,6 +348,9 @@ class LinkedList {
 			return this->listSize;
 		}
 
+		/**
+		 * Deletes all the nodes from the list
+		 */
 		void clearAll()
 		{
 			node *throwaway = new node;

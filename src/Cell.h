@@ -116,8 +116,12 @@ class Cell {
 		 */
 		bool operator<=(const Cell& c);
 
-
+		/**
+		 * Gets the integer representation of a Cell
+		 * @return the int value of the cell
+		 */
 		int getIntValue();
+
 		/**
 		 * Destructor
 		 */

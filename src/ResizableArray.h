@@ -225,6 +225,9 @@ class ResizableArray {
 			resizableArray[j] = temp;
 		}
 
+		/**
+		 * Clears the whole array
+		 */
 		void clearAll()
 		{
 			for(int i = 0; i < this->numElements; ++i)
@@ -233,6 +236,10 @@ class ResizableArray {
 			}
 		}
 
+		/**
+		 * Changes the size of the array to a user-specified size
+		 * @param newSize size to update to
+		 */
 		void resize(int newSize)
 		{
 			this->allocateMemory(newSize);
