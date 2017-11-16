@@ -25,12 +25,24 @@ void EclipseOperations::sort(int col, ResizableArray<Eclipse>& resizableArray)
 	quickSort(0, resizableArray.getNumElements() - 1, resizableArray, col);
 }
 
-void EclipseOperations::find(int col, Cell value, ResizableArray<Eclipse>& resizableArray, FileInput fileInput)
+void EclipseOperations::find(int col, Cell value, ResizableArray<Eclipse>& resizableArray, LinkedHashTable<Eclipse>& hashTable, FileInput fileInput)
 {
 	ResizableArray<Eclipse> printTheseValues;
 
+	if(col == 0)
+	{
+		Eclipse e;
+		e.addCell(value, col);
+		try{
+			printTheseValues.add(hashTable.getValue(value.getIntValue(), e));
+		}
+		catch(const char* msg)
+		{
+
+		}
+	}
 	//If the column is already sorted, do a modified binary search
-	if(col == currentSort)
+	else if(col == currentSort)
 	{
 		binarySearch(value, col, 0, resizableArray.getNumElements() - 1, resizableArray, printTheseValues);
 	}

@@ -95,7 +95,7 @@ class ResizableArray {
 		 */
 		T& get(int index)
 		{
-			if(index >= this->numElements || index < 0)
+			if(index >= this->arraySize || index < 0)
 			{
 				throw("ResizableArray::get(): Index out of range");
 			}
@@ -233,6 +233,11 @@ class ResizableArray {
 			}
 		}
 
+		void resize(int newSize)
+		{
+			this->allocateMemory(newSize);
+		}
+
 		/**
 		 * Destructor
 		 */
@@ -243,10 +248,7 @@ class ResizableArray {
 
 	protected:
 
-		void resize(int newSize)
-		{
-			this->allocateMemory(newSize);
-		}
+
 
 	private:
 		/**
@@ -303,10 +305,10 @@ class ResizableArray {
 
 			//Start with the deleted index
 			int i = index;
-			for(; i < this->numElements; ++i)
+			for(; i < this->arraySize; ++i)
 			{
 				//If the next element is not past the array boundaries, then shift it to the left
-				if((i + 1) != this->arraySize)
+				if((i + 1) < this->arraySize)
 				{
 					this->resizableArray[i] = this->resizableArray[i + 1];
 				}

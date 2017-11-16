@@ -81,16 +81,27 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 	//Did the file load successfully
 	bool fileLoadResult = false;
 
+	//Create the array for searching and sorting purposes
 	ResizableArray<Eclipse> eclipseArray;
 
 	//Load Linked List data into array
 	eclipseArray = eclipseList.buildArray();
 
+	//Create a linked Hash table for fast lookup of eclipses by catalog number
+	//Aim for a load factor of 0.7
+	LinkedHashTable<Eclipse> eclipseHashTable(10*eclipseList.getSize()/7);
+
+	//Load the data into the hash table
+	for(int ii = 0; ii < eclipseArray.getNumElements(); ++ii)
+	{
+		eclipseHashTable.insert(eclipseArray.get(ii).getCell(0).getIntValue(), eclipseArray.get(ii));
+	}
+
 	//Stay in the loop until the user presses quit
 	while(userInput != "Q")
 	{
 		//Ask for user input
-		cout << "(O)utput, (S)ort, (F)ind, (M)erge, (P)urge, (C)atalog Order, or (Q)uit?\n";
+		cout << "(O)utput, (S)ort, (F)ind, (M)erge, (P)urge, (C)atalog Order, (L)inked Display, (H)ash Display or (Q)uit?\n";
 		getline(cin, userInput);
 
 		//If the user wants to output the list:
@@ -156,7 +167,7 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 			string c;
 
 			//Request the column to sort
-			cout << "Data field (1-18)?\n";
+			cout << "Data field (2-18)?\n";
 			getline(cin, c);
 
 			//If the user did not just press enter, attempt to convert the input
@@ -166,7 +177,7 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 					col = fileInput.convertStrToInt(c);
 
 					//Only operate on valid column numbers
-					if(col >= 1 && col <= 18)
+					if(col >= 2 && col <= 18)
 					{
 						//Change to 0 indexing
 						col = col - 1;
@@ -211,7 +222,7 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 							try{
 								int num = fileInput.convertStrToInt(value);
 								Cell c(num);
-								dataOps.find(col, c, eclipseArray, fileInput);
+								dataOps.find(col, c, eclipseArray, eclipseHashTable, fileInput);
 							}
 							catch(...)
 							{
@@ -226,14 +237,14 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 							try{
 								double fPoint = fileInput.convertStrToDouble(value);
 								Cell c(fPoint);
-								dataOps.find(col, c, eclipseArray, fileInput);
+								dataOps.find(col, c, eclipseArray, eclipseHashTable, fileInput);
 							}
 							catch(...)
 							{
 								//This is not a valid value to look for; give up
 							}
 						}
-						else if(col == 4)
+						else if(col == 3)
 						{
 							cout << "Month abbreviation to find?\n";
 							getline(cin, value);
@@ -241,19 +252,21 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 							bool valid = false;
 							string months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-							for(int i = 0; i < 12; ++i)
+							int i = 0;
+							for(; i < 12; ++i)
 							{
 								if(value == months[i])
 								{
 									valid = true;
+									break;
 								}
 							}
 
 							//It is relatively unclear, but I will sort based on the abbreviation representation
 							if(valid)
 							{
-								Cell c(value);
-								dataOps.find(col, c, eclipseArray, fileInput);
+								Cell c(i);
+								dataOps.find(col, c, eclipseArray, eclipseHashTable, fileInput);
 							}
 						}
 						else
@@ -264,12 +277,12 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 							if(col == 16 && value == "")
 							{
 								Cell c(0, true);
-								dataOps.find(col, c, eclipseArray, fileInput);
+								dataOps.find(col, c, eclipseArray, eclipseHashTable, fileInput);
 							}
 							else
 							{
 								Cell c(value);
-								dataOps.find(col, c, eclipseArray, fileInput);
+								dataOps.find(col, c, eclipseArray, eclipseHashTable, fileInput);
 							}
 						}
 					}
@@ -283,19 +296,38 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 		//The user wants to add more files to the list
 		else if(userInput == "M")
 		{
-			cout << "Enter a data file name: ";
-			getline(cin, filename);
+			try{
+				cout << "Enter a data file name: ";
+				getline(cin, filename);
 
-			//If the file name is legitimate, load the file
-			if(filename != "")
-			{
-				fileLoadResult = fileInput.loadFile(eclipseList, filename);
+				//If the file name is legitimate, load the file
+				if(filename != "")
+				{
+					fileLoadResult = fileInput.loadFile(eclipseList, filename);
+				}
+
+				//Only update the array if needed (if the file is not available, no need to reload)
+				if(fileLoadResult)
+				{
+					//Rebuild the array
+					eclipseArray = eclipseList.buildArray();
+
+					//Clear the hash table to restart
+					eclipseHashTable.clearTable();
+
+					//Resize the table to account for new values
+					eclipseHashTable.resize(10*eclipseList.getSize()/7);
+
+					//Load the data into the hash table
+					for(int ii = 0; ii < eclipseArray.getNumElements(); ++ii)
+					{
+						eclipseHashTable.insert(eclipseArray.get(ii).getCell(0).getIntValue(), eclipseArray.get(ii));
+					}
+				}
 			}
-
-			//Only update the array if needed (if the file is not available, no need to reload)
-			if(fileLoadResult)
+			catch(const char* msg)
 			{
-				eclipseArray = eclipseList.buildArray();
+				cout << msg << endl;
 			}
 		}
 		//The user has a file of eclipses they want to remove
@@ -314,6 +346,18 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 			if(fileLoadResult)
 			{
 				eclipseArray = eclipseList.buildArray();
+
+				//Clear the hash table to restart
+				eclipseHashTable.clearTable();
+
+				//Resize the table to account for new values
+				eclipseHashTable.resize(10*eclipseList.getSize()/7);
+
+				//Load the data into the hash table
+				for(int ii = 0; ii < eclipseArray.getNumElements(); ++ii)
+				{
+					eclipseHashTable.insert(eclipseArray.get(ii).getCell(0).getIntValue(), eclipseArray.get(ii));
+				}
 			}
 		}
 		//Output by catalog number (i.e. output the linked list)
@@ -372,6 +416,17 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 				outputFile << "; Eclipses in memory: " << eclipseList.getSize();
 				outputFile << endl;
 			}
+		}
+		else if(userInput == "L")
+		{
+			//Output insertion order to standard output
+			cout << eclipseHashTable.getInsertionOrder() << endl;
+		}
+		else if(userInput == "H")
+		{
+			//Output the hash table to standard output
+			cout << eclipseHashTable;
+			cout << endl;
 		}
 		//If the user wants out, leave the loop and exit the program
 		else if(userInput == "Q")

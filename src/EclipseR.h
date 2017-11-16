@@ -14,6 +14,7 @@
 #include "FileInput.h"
 #include "ResizableArray.h"
 #include "LinkedList.h"
+#include "LinkedHashTable.h"
 #include "EclipseOperations.h"
 
 /**

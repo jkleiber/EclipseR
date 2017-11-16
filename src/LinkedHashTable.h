@@ -9,14 +9,40 @@
 #define SRC_LINKEDHASHTABLE_H_
 
 #include <iostream>
-
+#include "ResizableArray.h"
 #include "LinkedList.h"
 
 template <class T>
 class LinkedHashTable {
 
-	friend std::ostream& operator<<(std::ostream& os, LinkedHashTable<T> &list)
+	friend std::ostream& operator<<(std::ostream& os, LinkedHashTable &list)
 	{
+		for(int i = 0; i < list.tableSize; ++i)
+		{
+			os << i << " ";
+
+			if(list.hashTable.get(i).getSize() == 0)
+			{
+				os << "NULL\n\n";
+			}
+			else
+			{
+				os << list.hashTable.get(i).get(0) << std::endl;
+
+				for(int ii = 1; ii < list.hashTable.get(i).getSize(); ++ii)
+				{
+					if(ii == 1)
+					{
+						os << "OVERFLOW: \n";
+					}
+
+					os << list.hashTable.get(i).get(ii) << std::endl;
+				}
+
+				os << std::endl;
+			}
+
+		}
 
 		return os;
 	}
@@ -28,14 +54,20 @@ class LinkedHashTable {
 			tableSize = 0;
 		}
 
-		LinkedHashTable(LinkedHashTable<T> linkedHashTable)
+		LinkedHashTable(int size)
+		{
+			tableSize = size;
+			hashTable.resize(size);
+		}
+
+		LinkedHashTable(LinkedHashTable &linkedHashTable)
 		{
 			this->tableSize = linkedHashTable.tableSize;
 			this->insertOrder = linkedHashTable.insertOrder;
 			this->hashTable = linkedHashTable.hashTable;
 		}
 
-		void operator=(LinkedHashTable<T> linkedHashTable)
+		void operator=(LinkedHashTable &linkedHashTable)
 		{
 			this->tableSize = linkedHashTable.tableSize;
 			this->insertOrder = linkedHashTable.insertOrder;
@@ -46,12 +78,23 @@ class LinkedHashTable {
 		{
 			int index = hash(key);
 
-			hashTable.get(index).add(value);
+			try{
+				this->getChain(index).append(value);
+			}
+			catch(const char* message)
+			{
+				std::cout << "Invalid hash table input: " << message << " Index: " << index << "Table Size: " << hashTable.size() << std::endl;
+			}
 
-			insertOrder.add(value);
+			insertOrder.append(value);
 		}
 
-		T& get(int key, T searchParams)
+		LinkedList<T>& getChain(int bucket)
+		{
+			return hashTable.get(bucket);
+		}
+
+		T& getValue(int key, T searchParams)
 		{
 			int index = hash(key);
 
@@ -60,12 +103,20 @@ class LinkedHashTable {
 
 		void clearTable()
 		{
-			this->hashTable.clearAll();
+			try{
+				this->hashTable.clearAll();
+				this->insertOrder.clearAll();
+			}
+			catch(const char* msg)
+			{
+				std::cout << msg << std::endl;
+			}
 		}
 
 		void resize(int newSize)
 		{
 			this->hashTable.resize(newSize);
+			this->tableSize = newSize;
 		}
 
 		LinkedList<T>& getInsertionOrder()
@@ -81,7 +132,7 @@ class LinkedHashTable {
 
 	private:
 
-		ResizableArray<LinkedList<T>> hashTable;
+		ResizableArray<LinkedList<T> > hashTable;
 
 		LinkedList<T> insertOrder;
 
@@ -92,9 +143,9 @@ class LinkedHashTable {
 		 * @param key
 		 * @return
 		 */
-		int hash(T key)
+		int hash(int key)
 		{
-			return 0;
+			return key % tableSize;
 		}
 
 };

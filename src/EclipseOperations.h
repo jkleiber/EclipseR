@@ -11,6 +11,7 @@
 #include <string>
 #include "FileInput.h"
 #include "ResizableArray.h"
+#include "LinkedHashTable.h"
 #include "Eclipse.h"
 #include "Cell.h"
 
@@ -37,7 +38,7 @@ class EclipseOperations {
 		 * @param value The value to search for
 		 * @param resizableArray The array to search on
 		 */
-		void find(int col, Cell value, ResizableArray<Eclipse>& resizableArray, FileInput fileInput);
+		void find(int col, Cell value, ResizableArray<Eclipse>& resizableArray,  LinkedHashTable<Eclipse>& hashTable, FileInput fileInput);
 
 		/**
 		 *

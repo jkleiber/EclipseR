@@ -116,6 +116,8 @@ class Cell {
 		 */
 		bool operator<=(const Cell& c);
 
+
+		int getIntValue();
 		/**
 		 * Destructor
 		 */

@@ -54,6 +54,9 @@ class LinkedList {
 			this->head = new node;
 			head = NULL;
 
+			this->tail = new node;
+			tail = NULL;
+
 			this->listSize = 0;
 		}
 
@@ -70,6 +73,7 @@ class LinkedList {
 			}
 
 			this->head = linkedList.head;
+			this->tail = linkedList.tail;
 
 			this->listSize = linkedList.listSize;
 		}
@@ -78,7 +82,7 @@ class LinkedList {
 		 * Adds an element to the list
 		 * @param t the element to add
 		 */
-		void add(T t)
+		void add(T &t)
 		{
 			node *currentNode = new node;
 			node *lastNode = new node;
@@ -108,13 +112,16 @@ class LinkedList {
 				node *newNode = new node;
 
 				newNode->data = t;
+				newNode->next = NULL;
 				if(head == NULL)//special case for empty list
 				{
 					head = newNode;
+					tail = newNode;
 				}
 				else
 				{
 					lastNode->next = newNode;
+					tail = newNode;
 				}
 			}
 			//Replace a duplicate entry
@@ -141,6 +148,25 @@ class LinkedList {
 			}
 
 			//increment list size
+			listSize++;
+		}
+
+		void append(T &t)
+		{
+			node* newNode = new node;
+			newNode->data = t;
+			newNode->next = NULL;
+
+			if(tail != NULL)
+			{
+				tail->next = newNode;
+			}
+			if(head == NULL)
+			{
+				head = newNode;
+			}
+			tail = newNode;
+
 			listSize++;
 		}
 
@@ -183,6 +209,11 @@ class LinkedList {
 						throwaway = head;
 						head = head->next;
 					}
+					else if(currentNode == tail)
+					{
+						throwaway = tail;
+						tail = lastNode;
+					}
 					else
 					{
 						throwaway = currentNode;
@@ -191,6 +222,7 @@ class LinkedList {
 					listSize--;
 
 					delete throwaway; //Free the deleted node from memory
+					throwaway = NULL;
 
 					return true;
 				}
@@ -225,18 +257,21 @@ class LinkedList {
 				return currentNode->data;
 			}
 
-			std::cout << i << std::endl;
-
 			throw("LinkedList::get(): Index out of range");
 		}
 
-		T& search(T key)
+		/**
+		 *
+		 * @param id
+		 * @return
+		 */
+		T& search(T id)
 		{
 			node* currentNode = head;
 
 			while(currentNode != NULL)
 			{
-				if(currentNode->data == key)
+				if(currentNode->data == id)
 				{
 					return currentNode->data;
 				}
@@ -244,7 +279,7 @@ class LinkedList {
 				currentNode = currentNode->next;
 			}
 
-			return NULL;
+			throw("No value found.\n");
 		}
 
 		/**
@@ -258,7 +293,7 @@ class LinkedList {
 			currentNode = head;
 
 			//look for t until it is found or the end of the list is reached
-			while((currentNode != NULL))
+			while(currentNode != NULL)
 			{
 				if(currentNode->data != t)
 				{
@@ -304,6 +339,34 @@ class LinkedList {
 			return this->listSize;
 		}
 
+		void clearAll()
+		{
+			node *throwaway = new node;
+			node *currentNode = new node;
+
+			currentNode = head;
+
+			while(currentNode != NULL)
+			{
+				throwaway = currentNode;
+				currentNode = currentNode->next;
+				delete throwaway;
+				throwaway = NULL;
+			}
+
+			if(head != NULL)
+			{
+				head->next = NULL;
+				this->head = NULL;
+			}
+
+			if(tail != NULL)
+			{
+				tail = NULL;
+			}
+
+		}
+
 		/**
 		 * Frees all the nodes from memory
 		 */
@@ -313,9 +376,11 @@ class LinkedList {
 			while(currentNode != NULL)
 			{
 				head = currentNode->next;
-				delete currentNode;
+				//delete currentNode;
+				currentNode = NULL;
 				currentNode = head;
 			}
+			//clearAll();
 		}
 
 	private:
@@ -323,6 +388,11 @@ class LinkedList {
 		 * The head node of the list
 		 */
 		node *head;
+
+		/**
+		 * The tail of the linked list
+		 */
+		node *tail;
 
 		/**
 		 * the size of the list

@@ -299,3 +299,7 @@ bool Cell::operator<=(const Cell& c)
 	}
 }
 
+int Cell::getIntValue()
+{
+	return intData;
+}

@@ -139,6 +139,22 @@ void FileInput::processRow(string rawData, LinkedList<Eclipse>& eclipseList, int
 					eclipseData.addError(col);
 				}
 			}
+			else if(col == 3)
+			{
+				std::string months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+				int i = 0;
+				for(;i < 12; ++i)
+				{
+					if(months[i] == cell)
+					{
+						break;
+					}
+				}
+
+				Cell month(i);
+				eclipseData.addCell(month, col);
+			}
 			else
 			{
 				Cell s(cell);
