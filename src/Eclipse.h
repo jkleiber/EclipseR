@@ -155,16 +155,23 @@ class Eclipse
 		/**
 		 * Determines if this eclipse's catalog number is greater than another's
 		 * @param eclipse the other eclipse
-		 * @return true if this eclipse's catalognumber is greater
+		 * @return true if this eclipse's catalog number is greater
 		 */
 		bool operator>(const Eclipse& eclipse);
 
 		/**
 		 * Checks to see if two eclipses are equal
-		 * @param eclipse the othe eclipse
+		 * @param eclipse the other eclipse
 		 * @return true if equal
 		 */
 		bool operator==(const Eclipse& eclipse);
+
+		/**
+		 * Checks to see if two catalog numbers are equal
+		 * @param catalogNum the catalog number to compare to this eclipse
+		 * @return true if equal
+		 */
+		bool operator==(const int& catalogNum);
 
 		/**
 		 * Checks to see if two eclipses are not equal

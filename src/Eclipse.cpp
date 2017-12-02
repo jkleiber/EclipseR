@@ -186,6 +186,11 @@ bool Eclipse::operator==(const Eclipse& eclipse)
 	return this->cells[0] == eclipse.cells[0];
 }
 
+bool Eclipse::operator==(const int& catalogNum)
+{
+	return this->cells[0] == catalogNum;
+}
+
 bool Eclipse::operator!=(const Eclipse& eclipse)
 {
 	return this->cells[0] != eclipse.cells[0];
