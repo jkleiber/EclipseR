@@ -112,7 +112,7 @@ class FileInput {
 		 * @param mode the variable that indicates if we are adding or removing data
 		 * @return true if the eclipse is valid, false if not
 		 */
-		bool isValid(Eclipse eclipse, int dataRow, int mode);
+		bool isValid(Eclipse& eclipse, int dataRow, int mode);
 
 		/**
 		 * Process raw row data into an Eclipse object and add that to the array

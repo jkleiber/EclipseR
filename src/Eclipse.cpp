@@ -17,6 +17,11 @@ Eclipse::Eclipse()
 	this->rawInput = "";
 	this->numErrors = 0;
 	this->row = 0;
+
+	for(int i = 0; i < 24; ++i)
+	{
+		this->columnErrors[i] = false;
+	}
 }
 
 

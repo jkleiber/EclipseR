@@ -205,6 +205,10 @@ class LinkedHashTable {
 		 */
 		int hash(int key)
 		{
+			if(tableSize == 0)
+			{
+				return 0;
+			}
 			return key % tableSize;
 		}
 

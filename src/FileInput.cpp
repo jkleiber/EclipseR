@@ -123,7 +123,6 @@ void FileInput::processRow(string rawData, AVLTree<Eclipse>& eclipseTree, int ro
 				}
 				catch(const char* msg)
 				{
-					//std::cout << msg << std::endl;
 					eclipseData.addError(col);
 				}
 			}
@@ -229,7 +228,7 @@ void FileInput::processRow(string rawData, AVLTree<Eclipse>& eclipseTree, int ro
 }
 
 
-bool FileInput::isValid(Eclipse eclipse, int dataRow, int mode)
+bool FileInput::isValid(Eclipse& eclipse, int dataRow, int mode)
 {
 	/* Check to see if eclipse type matches column numbers */
 

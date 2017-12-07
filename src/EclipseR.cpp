@@ -312,11 +312,11 @@ void dataManipLoop(AVLTree<Eclipse>& eclipseTree, FileInput& fileInput)
 					//Rebuild the array
 					eclipseArray = eclipseTree.buildArray();
 
-					//Clear the hash table to restart
-					eclipseHashTable.clearTable();
+					//Create a temporary hash table to restart
+					LinkedHashTable<Eclipse> temp(10*eclipseTree.getSize()/7);
 
-					//Resize the table to account for new values
-					eclipseHashTable.resize(10*eclipseTree.getSize()/7);
+					//Set the master hash table to the blank slate
+					eclipseHashTable = temp;
 
 					//Load the data into the hash table
 					for(int ii = 0; ii < eclipseArray.getNumElements(); ++ii)
@@ -347,11 +347,11 @@ void dataManipLoop(AVLTree<Eclipse>& eclipseTree, FileInput& fileInput)
 			{
 				eclipseArray = eclipseTree.buildArray();
 
-				//Clear the hash table to restart
-				eclipseHashTable.clearTable();
+				//Create a temporary hash table to restart
+				LinkedHashTable<Eclipse> temp(10*eclipseTree.getSize()/7);
 
-				//Resize the table to account for new values
-				eclipseHashTable.resize(10*eclipseTree.getSize()/7);
+				//Set the master hash table to the blank slate
+				eclipseHashTable = temp;
 
 				//Load the data into the hash table
 				for(int ii = 0; ii < eclipseArray.getNumElements(); ++ii)

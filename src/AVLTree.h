@@ -21,6 +21,9 @@ std::ostream& operator<<(std::ostream& os, AVLTree<T> &tree);
 template<class T>
 class AVLTree
 {
+	/**
+	 * The struct that keeps track of the properties of tree nodes
+	 */
 	struct treeNode
 	{
 		T data;
@@ -30,63 +33,174 @@ class AVLTree
 		int key;
 	};
 
-	//In-order printing
+	/**
+	 * Print the in-order traversal of the tree
+	 * @param os the output stream
+	 * @param tree the tree to traverse and print
+	 * @return the output stream for std::cout
+	 */
 	friend std::ostream& operator<< <T>(std::ostream& os, AVLTree<T> &tree);
 
 	public:
-
+		/**
+		 * Construct the AVL Tree
+		 */
 		AVLTree();
 
+		/**
+		 * Insert data into the tree
+		 * @param t data to insert
+		 * @param key the key to sort the data by
+		 */
 		void insert(T& t, int key);
 
+		/**
+		 * Remove a certain key from the tree
+		 * @param key The key value to remove
+		 */
 		void remove(int key);
 
+		/**
+		 * Search for a value in the tree
+		 * @param key the key to search for
+		 * @return The data found
+		 * @throws an exception if there is no value found
+		 */
 		T& search(int key);
 
+		/**
+		 * Print a pre-order traversal of the tree
+		 */
 		void printPreOrder();
 
+		/**
+		 * Print a post-order traversal of the tree
+		 */
 		void printPostOrder();
 
+		/**
+		 * Gets the number of elements in the tree
+		 * @return the number of nodes in the tree
+		 */
 		int getSize();
 
+		/**
+		 * Builds an array from the tree
+		 * @return A resizable array of all the elements in order
+		 */
 		ResizableArray<T> buildArray();
 
 	private:
+		/**
+		 * Keep track of number of elements in the tree
+		 */
 		int numElements;
 
+		/**
+		 * Keep track of the tree's root
+		 */
 		treeNode* root;
 
+		/**
+		 * Find the location of a key in the array
+		 * @param key The key to search for
+		 * @return the node where the key is found
+		 */
 		treeNode* findLocation(int key);
 
+		/**
+		 * Rotate a subtree in order to avoid unbalanced branches
+		 * @param currentNode The rotation point
+		 * @param parentNode the node above the rotation point
+		 */
 		void rotateTree(treeNode*& currentNode, treeNode*& parentNode);
 
-
+		/**
+		 * Helper function for insertion, uses recursion to find location
+		 * and inserts a node into the tree
+		 * @param insertNode node to insert
+		 * @param currentNode recursive current node to check for insertion points
+		 */
 		void recursiveInsert(treeNode* insertNode, treeNode*& currentNode);
 
-		void recursiveRemove(int key, treeNode*& currentNode, treeNode*& parentNode, int leftOrRight);
+		/**
+		 * Helper function for removal. Recursively finds and removes a node
+		 * @param key the key of the node to find
+		 * @param currentNode the current node
+		 * @param parentNode the current parent node
+		 * @param leftOrRight tells if the last movement was left or right
+		 * @return true if value successfully removed, false otherwise
+		 */
+		bool recursiveRemove(int key, treeNode*& currentNode, treeNode*& parentNode, int leftOrRight);
 
+		/**
+		 * Find the node to replace this node with if this node has 2 children
+		 * @param currentNode the recursively current node
+		 * @return the node to use as replacement
+		 */
+		treeNode* findReplaceNode(treeNode* currentNode);
 
-		treeNode* findReplaceNode(treeNode* currentNode, int mode = 0);
-
+		/**
+		 * Update the entire tree's balance factors
+		 * @param currentNode the current node to update
+		 * @param parentNode the parent node of this node
+		 */
 		void updateBalanceFactors(treeNode*& currentNode, treeNode*& parentNode);
 
+		/**
+		 * Gets the height of the tree from the current node
+		 * @param currentNode the root node of the (sub)tree
+		 * @param height the recursive height of the tree
+		 * @return The height of the tree
+		 */
 		int getHeight(treeNode* currentNode, int height=1);
 
 
+		/**
+		 * Helper function to build an array with an in-order traversal
+		 * @param array the array to modify
+		 * @param currentNode the node to add to the array
+		 */
 		void buildInOrderArray(ResizableArray<T>& array, treeNode*& currentNode);
 
-
+		/**
+		 * Output an in-order traversal to a stream
+		 * @param os ostream to modify with node data
+		 * @param currentNode the current node to stream
+		 */
 		void streamInOrder(std::ostream& os, treeNode* currentNode);
 
+		/**
+		 * Print a pre-order traversal
+		 * @param currentNode the node to print
+		 */
 		void streamPreOrder(treeNode* currentNode);
 
+		/**
+		 * Print a post-order traversal
+		 * @param currentNode The node to print from
+		 */
 		void streamPostOrder(treeNode* currentNode);
 
+		/**
+		 * Debug function used to print the structure of the tree
+		 * and balance factor/depth of each node with in order traversal
+		 * @param currentNode the node to print
+		 * @param depth the depth of the current node
+		 */
 		void printKeysTreeStyle(treeNode* currentNode, int depth=0);
 
 
+		/**
+		 * Right rotation helper function
+		 * @param currentNode the node to rotate at
+		 */
 		void rotateRight(treeNode*& currentNode);
 
+		/**
+		 * Left rotation helper function
+		 * @param currentNode the node to rotate at.
+		 */
 		void rotateLeft(treeNode*& currentNode);
 };
 
@@ -124,14 +238,17 @@ void AVLTree<T>::remove(int key)
 {
 	try
 	{
-		recursiveRemove(key, root, root, 0);
+		bool b = recursiveRemove(key, root, root, 0);
 
 		if(root != NULL)
 		{
 			updateBalanceFactors(root, root);
 		}
 
-		this->numElements--;
+		if(b)
+		{
+			this->numElements--;
+		}
 	}
 	catch(const char* message)
 	{
@@ -334,7 +451,7 @@ void AVLTree<T>::recursiveInsert(treeNode* insertNode, treeNode*& currentNode)
 }
 
 template<class T>
-void AVLTree<T>::recursiveRemove(int key, treeNode*& currentNode, treeNode*& parentNode, int leftOrRight)
+bool AVLTree<T>::recursiveRemove(int key, treeNode*& currentNode, treeNode*& parentNode, int leftOrRight)
 {
 	if(currentNode != NULL)
 	{
@@ -414,36 +531,42 @@ void AVLTree<T>::recursiveRemove(int key, treeNode*& currentNode, treeNode*& par
 				currentNode->key = replaceNode->key;
 
 				//Remove the replaced node
-				recursiveRemove(replaceNode->key, currentNode->left, currentNode, 0);
+				return recursiveRemove(replaceNode->key, currentNode->left, currentNode, 0);
 			}
 		}
 		else if(key < currentNode->key)
 		{
 			if(currentNode->left != NULL)
 			{
-				recursiveRemove(key, currentNode->left, currentNode, 0);
+				return recursiveRemove(key, currentNode->left, currentNode, 0);
 			}
 			else
 			{
-				throw("Value not found in the AVL Tree!");
+				return false;
 			}
 		}
 		else
 		{
 			if(currentNode->right != NULL)
 			{
-				recursiveRemove(key, currentNode->right, currentNode, 1);
+				return recursiveRemove(key, currentNode->right, currentNode, 1);
 			}
 			else
 			{
-				throw("Value not found in the AVL Tree!");
+				return false;
 			}
 		}
+
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
 template<class T>
-typename AVLTree<T>::treeNode* AVLTree<T>::findReplaceNode(treeNode* currentNode, int mode)
+typename AVLTree<T>::treeNode* AVLTree<T>::findReplaceNode(treeNode* currentNode)
 {
 	while(currentNode->right != NULL)
 	{
