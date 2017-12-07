@@ -10,6 +10,14 @@
 
 #include <iostream>
 
+#include "ResizableArray.h"
+
+template<typename T>
+class AVLTree;
+
+template<typename T>
+std::ostream& operator<<(std::ostream& os, AVLTree<T> &tree);
+
 template<class T>
 class AVLTree
 {
@@ -22,7 +30,8 @@ class AVLTree
 		int key;
 	};
 
-	friend std::ostream& operator<<(std::ostream& os, AVLTree<T> &tree);
+	//In-order printing
+	friend std::ostream& operator<< <T>(std::ostream& os, AVLTree<T> &tree);
 
 	public:
 
@@ -34,28 +43,51 @@ class AVLTree
 
 		T& search(int key);
 
-		void printInOrder();
-
 		void printPreOrder();
 
 		void printPostOrder();
+
+		int getSize();
+
+		ResizableArray<T> buildArray();
 
 	private:
 		int numElements;
 
 		treeNode* root;
 
-		treeNode*& findLocation(int key);
+		treeNode* findLocation(int key);
 
 		void rotateTree(treeNode*& currentNode, treeNode*& parentNode);
 
-		int recursiveInsert(treeNode*& insertNode, treeNode*& currentNode, treeNode*& parentNode);
 
-		int recursiveRemove(int key, treeNode*& currentNode, treeNode*& parentNode, int leftOrRight);
+		void recursiveInsert(treeNode* insertNode, treeNode*& currentNode);
 
-		treeNode*& findReplaceNode(treeNode*& currentNode);
+		void recursiveRemove(int key, treeNode*& currentNode, treeNode*& parentNode, int leftOrRight);
 
-		int updateSubtreeBalance(treeNode*& currentNode, treeNode*& parentNode, treeNode*& replaceNode);
+
+		treeNode* findReplaceNode(treeNode* currentNode, int mode = 0);
+
+		void updateBalanceFactors(treeNode*& currentNode, treeNode*& parentNode);
+
+		int getHeight(treeNode* currentNode, int height=1);
+
+
+		void buildInOrderArray(ResizableArray<T>& array, treeNode*& currentNode);
+
+
+		void streamInOrder(std::ostream& os, treeNode* currentNode);
+
+		void streamPreOrder(treeNode* currentNode);
+
+		void streamPostOrder(treeNode* currentNode);
+
+		void printKeysTreeStyle(treeNode* currentNode, int depth=0);
+
+
+		void rotateRight(treeNode*& currentNode);
+
+		void rotateLeft(treeNode*& currentNode);
 };
 
 
@@ -68,9 +100,6 @@ AVLTree<T>::AVLTree()
 	this->numElements = 0;
 	this->root = new treeNode;
 	this->root = NULL;
-
-	this->root->left = NULL;
-	this->root->right = NULL;
 }
 
 template<class T>
@@ -83,13 +112,32 @@ void AVLTree<T>::insert(T& t, int key)
 	leaf->balance = 0;
 	leaf->key = key;
 
-	recursiveInsert(leaf, root, NULL);
+	recursiveInsert(leaf, root);
+
+	updateBalanceFactors(root, root);
+
+	this->numElements++;
 }
 
 template<class T>
 void AVLTree<T>::remove(int key)
 {
-	recursiveRemove(key, root, NULL);
+	try
+	{
+		recursiveRemove(key, root, root, 0);
+
+		if(root != NULL)
+		{
+			updateBalanceFactors(root, root);
+		}
+
+		this->numElements--;
+	}
+	catch(const char* message)
+	{
+		std::cout << message;
+		std::cout << std::endl;
+	}
 }
 
 template<class T>
@@ -97,17 +145,50 @@ T& AVLTree<T>::search(int key)
 {
 	treeNode* resultNode = findLocation(key);
 
-	if(resultNode->key == key)
+	if(resultNode != NULL)
 	{
-		return resultNode->data;
+		if(resultNode->key == key)
+		{
+			return resultNode->data;
+		}
 	}
-
 	throw("Value not found in the AVL Tree!");
 }
 
+
 template<class T>
-friend std::ostream& operator<<(std::ostream& os, AVLTree<T> &tree)
+void AVLTree<T>::printPreOrder()
 {
+	streamPreOrder(root);
+}
+
+template<class T>
+void AVLTree<T>::printPostOrder()
+{
+	streamPostOrder(root);
+}
+
+template<class T>
+int AVLTree<T>::getSize()
+{
+	return this->numElements;
+}
+
+template<class T>
+ResizableArray<T> AVLTree<T>::buildArray()
+{
+	ResizableArray<T> array;
+
+	//Recursively build array
+	buildInOrderArray(array, root);
+
+	return array;
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& os, AVLTree<T> &tree)
+{
+	tree.streamInOrder(os, tree.root);
 	return os;
 }
 
@@ -116,7 +197,7 @@ friend std::ostream& operator<<(std::ostream& os, AVLTree<T> &tree)
 //-------------------
 
 template<class T>
-AVLTree::treeNode*& AVLTree<T>::findLocation(int key)
+typename AVLTree<T>::treeNode* AVLTree<T>::findLocation(int key)
 {
 	treeNode* currentNode = new treeNode;
 	treeNode* lastNode = new treeNode;
@@ -154,29 +235,23 @@ void AVLTree<T>::rotateTree(treeNode*& currentNode, treeNode*& parentNode)
 	 * Rotation cases found in zyBooks chapter 20, section 10, Figure 20.10.1
 	 * I used this figure to create the logic for rotating the tree
 	 */
-	if(currentNode->balance < -1)
+
+	//If the left side is unbalanced
+	if(currentNode->balance > 1)
 	{
-		stepTwo = currentNode->left->balance;
+		if(currentNode->left != NULL)
+		{
+			stepTwo = currentNode->left->balance;
+		}
+		else
+		{
+			stepTwo = 0;
+		}
 
 		//Left-Left violation (Right Rotation)
-		if(stepTwo < 0)
+		if(stepTwo > 0)
 		{
-			treeNode* temp = currentNode->left->right;
-			currentNode->left->right = currentNode;
-
-			//Update parent node and root if necessary
-			if(currentNode == this->root)
-			{
-				this->root = currentNode->left;
-			}
-			parentNode = currentNode->left;
-
-			//finish Rotation
-			currentNode->left = temp;
-
-			//Update balance factors of rotated nodes
-			currentNode->balance = 0;
-			parentNode->balance = 0;
+			rotateRight(currentNode);
 		}
 		//Left-Right violation
 		else
@@ -189,48 +264,25 @@ void AVLTree<T>::rotateTree(treeNode*& currentNode, treeNode*& parentNode)
 			B->right = t2;
 
 			//Right Rotation
-			treeNode* temp = currentNode->left->right;
-			currentNode->left->right = currentNode;
-
-			//Update parent node and root if necessary
-			if(currentNode == this->root)
-			{
-				this->root = currentNode->left;
-			}
-			parentNode = currentNode->left;
-
-			//Finish Rotation
-			currentNode->left = temp;
-
-			//Update balances
-			currentNode->balance = 0;
-			B->balance = 0;
-			parentNode->balance = 0;
+			rotateRight(currentNode);
 		}
 	}
-	else if(currentNode->balance > 1)
+	//If the right side is unbalanced
+	else if(currentNode->balance < -1)
 	{
-		stepTwo = currentNode->right->balance;
+		if(currentNode->right != NULL)
+		{
+			stepTwo = currentNode->right->balance;
+		}
+		else
+		{
+			stepTwo = 0;
+		}
 
 		//Right-Right violation (Left Rotation)
-		if(stepTwo > 0)
+		if(stepTwo < 0)
 		{
-			treeNode* temp = currentNode->right->left;
-			currentNode->right->left = currentNode;
-
-			//Update parent node and root if necessary
-			if(currentNode == this->root)
-			{
-				this->root = currentNode->right;
-			}
-			parentNode = currentNode->right;
-
-			//Finish Rotation
-			currentNode->right = temp;
-
-			//Update balances
-			currentNode->balance = 0;
-			parentNode->balance = 0;
+			rotateLeft(currentNode);
 		}
 		//Right-Left violation
 		else
@@ -243,215 +295,155 @@ void AVLTree<T>::rotateTree(treeNode*& currentNode, treeNode*& parentNode)
 			B->left = t3;
 
 			//Left Rotation
-			treeNode* temp = currentNode->right->left;
-			currentNode->right->left = currentNode;
-
-			//Update parent node and root if necessary
-			if(currentNode == this->root)
-			{
-				this->root = currentNode->right;
-			}
-			parentNode = currentNode->right;
-
-			//Finish rotation
-			currentNode->right = temp;
-
-			//Update balances
-			B->balance = 0;
-			parentNode->balance = 0;
-			currentNode->balance = 0;
+			rotateLeft(currentNode);
 		}
 	}
 }
 
 template<class T>
-int AVLTree<T>::recursiveInsert(treeNode*& insertNode, treeNode*& currentNode, treeNode*& parentNode)
+void AVLTree<T>::recursiveInsert(treeNode* insertNode, treeNode*& currentNode)
 {
-	//Keep track of how much the balance changes
-	int balanceDelta = 0;
-
-	if(currentNode == NULL)
+	//If this is the first insertion into the tree, setup the tree!
+	if(this->root == NULL)
 	{
-		if(insertNode->data < parentNode->data)
-		{
-			parentNode->left = insertNode;
-
-			//If there has been height added, update the balances
-			if(parentNode->right == NULL)
-			{
-				return 1; //New level created, subtract 1
-			}
-			else
-			{
-				return 0;
-			}
-		}
-		else
-		{
-			parentNode->right = insertNode;
-
-			//If there has been height added, update the balances
-			if(parentNode->left == NULL)
-			{
-				return 1; //New level created, add one
-			}
-			else
-			{
-				return 0;
-			}
-		}
+		this->root = insertNode;
+	}
+	else if(currentNode->left == NULL && (insertNode->data < currentNode->data))
+	{
+		currentNode->left = insertNode;
+	}
+	else if(currentNode->right == NULL && (insertNode->data > currentNode->data))
+	{
+		currentNode->right = insertNode;
 	}
 	//Insert to the left if appropriate
 	else if(insertNode->data < currentNode->data)
 	{
-		balanceDelta = recursiveInsert(insertNode, currentNode->left, currentNode);
-		currentNode->balance += balanceDelta;
+		recursiveInsert(insertNode, currentNode->left);
 	}
-	//Insert to the left if appropriate
+	//Insert to the right if appropriate
 	else if(insertNode->data > currentNode->data)
 	{
-		balanceDelta = recursiveInsert(insertNode, currentNode->right, currentNode);
-		currentNode->balance -= balanceDelta;
+		recursiveInsert(insertNode, currentNode->right);
 	}
 	//If the nodes are identical, replace the old one
 	else
 	{
 		currentNode->data = insertNode->data;
 	}
-
-	//If the tree is out of balance at this node, rotate it
-	if(currentNode->balance > 1 || currentNode->balance < -1)
-	{
-		rotateTree(currentNode, parentNode);
-		balanceDelta = 0;
-	}
-
-	/**
-	 * The balance change should be propagated up
-	 * the tree until rotation is required
-	 */
-	return balanceDelta;
 }
 
 template<class T>
-int AVLTree<T>::recursiveRemove(int key, treeNode*& currentNode, treeNode*& parentNode, int leftOrRight)
+void AVLTree<T>::recursiveRemove(int key, treeNode*& currentNode, treeNode*& parentNode, int leftOrRight)
 {
-	//Keep track of the changes in balance
-	int balanceDelta = 0;
-
-	//If the key has been found
-	if(key == currentNode->key)
+	if(currentNode != NULL)
 	{
-		//Start the removal process...
-
-		//If this node has no children, this is easy
-		if(currentNode->left == NULL && currentNode->right == NULL)
+		//If the key has been found
+		if(key == currentNode->key)
 		{
-			//Figure out which child node to set to NULL
-			if(leftOrRight == 0)
+			//Start the removal process...
+
+			//If this node has no children, this is easy
+			if(currentNode->left == NULL && currentNode->right == NULL)
 			{
-				parentNode->left = NULL;
+				//Not the root node, so set the parent's left or right to NULL
+				if(parentNode != root)
+				{
+					//Figure out which child node to set to NULL
+					if(leftOrRight == 0)
+					{
+						parentNode->left = NULL;
+					}
+					else
+					{
+						parentNode->right = NULL;
+					}
+
+					//Delete the node to be removed
+					delete currentNode;
+				}
+				else
+				{
+					//This must be the root node
+					root = NULL;
+				}
+			}
+			//If this node has one child, it's still pretty easy
+			else if((currentNode->left == NULL) != (currentNode->right == NULL))
+			{
+				//Find the child node and set it as a placeholder
+				treeNode* node = new treeNode;
+				if(currentNode->left == NULL)
+				{
+					node = currentNode->right;
+				}
+				else
+				{
+					node = currentNode->left;
+				}
+
+				delete currentNode;
+
+				if(parentNode != NULL)
+				{
+					//Figure out which child node to set to the current child
+					if(leftOrRight == 0)
+					{
+						parentNode->left = node;
+					}
+					else
+					{
+						parentNode->right = node;
+					}
+				}
+				else
+				{
+					//Removing the root node means replacing it with its child
+					root = node;
+				}
+			}
+			//The node has two children
+			else
+			{
+				treeNode* replaceNode = new treeNode;
+
+				replaceNode = findReplaceNode(currentNode->left);
+
+				//Perform a replacement
+				currentNode->data = replaceNode->data;
+				currentNode->key = replaceNode->key;
+
+				//Remove the replaced node
+				recursiveRemove(replaceNode->key, currentNode->left, currentNode, 0);
+			}
+		}
+		else if(key < currentNode->key)
+		{
+			if(currentNode->left != NULL)
+			{
+				recursiveRemove(key, currentNode->left, currentNode, 0);
 			}
 			else
 			{
-				parentNode->right = NULL;
+				throw("Value not found in the AVL Tree!");
 			}
-
-			//Delete the node to be removed
-			delete currentNode;
-
-			//Return the change in height (absolute value)
-			if(parentNode->left == NULL && parentNode->right == NULL)
-			{
-				return 1;
-			}
-			else
-			{
-				return 0;
-			}
-		}
-		//If this node has one child, it's still pretty easy
-		else if((currentNode->left == NULL) != (currentNode->right == NULL))
-		{
-			//Find the child node and set it as a placeholder
-			treeNode* node = new treeNode;
-			if(currentNode->left == NULL)
-			{
-				node = currentNode->right;
-			}
-			else
-			{
-				node = currentNode->left;
-			}
-
-			//Figure out which child node to set to the current child
-			if(leftOrRight == 0)
-			{
-				parentNode->left = node;
-			}
-			else
-			{
-				parentNode->right = node;
-			}
-
-			//Return the change in height (absolute value)
-			return 1; //Note: since this has one child, the height of this sub tree is always subtracted by 1.
-		}
-		//The node has two children, and now it is difficult
-		else
-		{
-			treeNode* replaceNode = new treeNode;
-
-			replaceNode = findReplaceNode(currentNode->left);
-
-			//Perform a replacement
-			currentNode->data = replaceNode->data;
-			currentNode->key = replaceNode->key;
-
-			balanceDelta = updateSubtreeBalance(currentNode->left, currentNode, replaceNode);
-
-			currentNode->balance += balanceDelta;
-		}
-	}
-	else if(key < currentNode->key)
-	{
-		if(currentNode->left != NULL)
-		{
-			balanceDelta = recursiveRemove(key, currentNode->left);
-
-			currentNode->balance -= balanceDelta;
-		}
-		else
-		{
-			throw("Value not found in the AVL Tree!");
-		}
-	}
-	else
-	{
-		if(currentNode->right != NULL)
-		{
-			balanceDelta = recursiveRemove(key, currentNode->right);
-
-			currentNode->balance += balanceDelta;
 		}
 		else
 		{
-			throw("Value not found in the AVL Tree!");
+			if(currentNode->right != NULL)
+			{
+				recursiveRemove(key, currentNode->right, currentNode, 1);
+			}
+			else
+			{
+				throw("Value not found in the AVL Tree!");
+			}
 		}
 	}
-
-	//If the tree is out of balance at this node, rotate it
-	if(currentNode->balance > 1 || currentNode->balance < -1)
-	{
-		rotateTree(currentNode, parentNode);
-		balanceDelta = 0;
-	}
-
-	return balanceDelta;
 }
 
 template<class T>
-AVLTree::treeNode*& AVLTree<T>::findReplaceNode(treeNode*& currentNode)
+typename AVLTree<T>::treeNode* AVLTree<T>::findReplaceNode(treeNode* currentNode, int mode)
 {
 	while(currentNode->right != NULL)
 	{
@@ -462,67 +454,227 @@ AVLTree::treeNode*& AVLTree<T>::findReplaceNode(treeNode*& currentNode)
 }
 
 template<class T>
-int AVLTree<T>::updateSubtreeBalance(treeNode*& currentNode, treeNode*& parentNode, treeNode*& replaceNode)
+void AVLTree<T>::updateBalanceFactors(treeNode*& currentNode, treeNode*& parentNode)
 {
-	if(currentNode->right == NULL)
-	{
-		parentNode->left = currentNode->left;
-		delete currentNode;
+	//Keep track of subtree heights
+	int left = 0, right = 0;
 
-		//The height has to have changed by 1 in this case
-		return 1;
+	//Go to the lowest possible nodes on the left first
+	if(currentNode->left != NULL)
+	{
+		updateBalanceFactors(currentNode->left, currentNode);
+		left = getHeight(currentNode->left);
 	}
-	else if(currentNode->right == replaceNode)
+
+	//Go to the lowest possible nodes on the right
+	if(currentNode->right != NULL)
 	{
-		//No matter what, we need to update this node's balance factor
-		currentNode->balance++;
+		updateBalanceFactors(currentNode->right, currentNode);
+		right = getHeight(currentNode->right);
+	}
 
-		//If the replacement node has no children, we can simply delete it
-		if(replaceNode->left == NULL)
-		{
-			currentNode->right = NULL;
-			delete replaceNode;
+	//Update the balances
+	currentNode->balance = left - right;
 
-			//Check if the height above the current node changed
-			if(currentNode->left == NULL)
-			{
-				//In this configuration, the current node is now a leaf, -1 height
-				return 1;
-			}
-			else
-			{
-				//Otherwise, the current node is still an inner node
-				return 0;
-			}
-		}
-		//Otherwise the left node below the replacement needs to be shifted up
-		else
-		{
-			currentNode->right = replaceNode->left;
-			delete replaceNode;
+	//Rotate if necessary
+	if(currentNode->balance < -1 || currentNode->balance > 1)
+	{
+		rotateTree(currentNode, parentNode);
+	}
 
-			//There is only one AVL configuration where this is possible,
-			//and the height always will be reduced by 1 on removal
-			return 1;
-		}
+}
+
+template<class T>
+int AVLTree<T>::getHeight(treeNode* currentNode, int height)
+{
+	if(currentNode->left == NULL && currentNode->right == NULL)
+	{
+		return height;
 	}
 	else
 	{
-		int balanceDelta = updateSubtreeBalance(currentNode->right, currentNode, replaceNode);
+		int h1 = 0, h2 = 0;
 
-		currentNode->balance += balanceDelta;
-
-		//If we rotate, then the height decreases 1. If we do not rotate, it might. See discrete notebook
-
-		//If the tree is out of balance at this node, rotate it
-		if(currentNode->balance > 1 || currentNode->balance < -1)
+		if(currentNode->left != NULL)
 		{
-			rotateTree(currentNode, parentNode);
-			balanceDelta = 0;
+			h1 = getHeight(currentNode->left, height + 1);
 		}
 
-		return balanceDelta;
+		if(currentNode->right != NULL)
+		{
+			h2 = getHeight(currentNode->right, height +1);
+		}
+
+		int height = h1 > h2 ? h1 : h2;
+
+		return height;
 	}
 }
 
+template<class T>
+void AVLTree<T>::buildInOrderArray(ResizableArray<T>& array, treeNode*& currentNode)
+{
+	if(currentNode != NULL)
+	{
+		if(currentNode->left != NULL)
+		{
+			buildInOrderArray(array, currentNode->left);
+		}
+
+		array.add(currentNode->data);
+
+		if(currentNode->right != NULL)
+		{
+			buildInOrderArray(array, currentNode->right);
+		}
+	}
+}
+
+
+template<class T>
+void AVLTree<T>::streamInOrder(std::ostream& os, treeNode* currentNode)
+{
+	if(currentNode != NULL)
+	{
+		if(currentNode->left != NULL)
+		{
+			streamInOrder(os, currentNode->left);
+		}
+
+		os << currentNode->data;
+		os << std::endl;
+
+		if(currentNode->right != NULL)
+		{
+			streamInOrder(os, currentNode->right);
+		}
+	}
+}
+
+template<class T>
+void AVLTree<T>::streamPreOrder(treeNode* currentNode)
+{
+	if(currentNode != NULL)
+	{
+		std::cout << currentNode->data;
+		std::cout << std::endl;
+
+		if(currentNode->left != NULL)
+		{
+			streamPreOrder(currentNode->left);
+		}
+
+		if(currentNode->right != NULL)
+		{
+			streamPreOrder(currentNode->right);
+		}
+	}
+}
+
+template<class T>
+void AVLTree<T>::streamPostOrder(treeNode* currentNode)
+{
+	if(currentNode != NULL)
+	{
+		if(currentNode->left != NULL)
+		{
+			streamPostOrder(currentNode->left);
+		}
+
+		if(currentNode->right != NULL)
+		{
+			streamPostOrder(currentNode->right);
+		}
+
+		std::cout << currentNode->data;
+		std::cout << std::endl;
+	}
+}
+
+template<class T>
+void AVLTree<T>::printKeysTreeStyle(treeNode* currentNode, int depth)
+{
+	if(currentNode != NULL)
+	{
+		if(currentNode == root)
+		{
+			std::cout << "ROOT: ";
+		}
+
+		std::cout << currentNode->key << " " << depth << " B: " << currentNode->balance;
+		std::cout << std::endl;
+
+		depth++;
+
+		if(currentNode->left != NULL)
+		{
+			std::cout << "L: ";
+			printKeysTreeStyle(currentNode->left, depth);
+		}
+
+		if(currentNode->right != NULL)
+		{
+			std::cout << "R: ";
+			printKeysTreeStyle(currentNode->right, depth);
+		}
+	}
+}
+
+template<class T>
+void AVLTree<T>::rotateRight(treeNode*& currentNode)
+{
+	//Update balances
+	currentNode->balance = 0;
+
+	treeNode* t2 = currentNode->left->right;
+	treeNode* A = currentNode;
+
+	currentNode->left->right = currentNode;
+
+	treeNode* p = new treeNode;
+	p = currentNode->left;
+	p->balance = 0;
+	p->right = A;
+
+	A->left = t2;
+
+	//Update parent node and root if necessary
+	if(currentNode == this->root)
+	{
+		this->root = p;
+	}
+	else
+	{
+		currentNode = p;
+	}
+}
+
+template<class T>
+void AVLTree<T>::rotateLeft(treeNode*& currentNode)
+{
+	//Update balances
+	currentNode->balance = 0;
+
+	treeNode* t2 = currentNode->right->left;
+	treeNode* A = currentNode;
+
+	currentNode->right->left = currentNode;
+
+	treeNode* p = new treeNode;
+	p = currentNode->right;
+	p->balance = 0;
+	p->left = A;
+
+	A->right = t2;
+
+	//Update parent node and root if necessary
+	if(currentNode == this->root)
+	{
+		this->root = p;
+	}
+	else
+	{
+		currentNode = p;
+	}
+}
 #endif /* SRC_AVLTREE_H_ */

@@ -28,7 +28,7 @@ int FileInput::getTotal() const
 	return this->totalElementsRead;
 }
 
-bool FileInput::loadFile(LinkedList<Eclipse>& eclipseList, string file, int mode)
+bool FileInput::loadFile(AVLTree<Eclipse>& eclipseTree, string file, int mode)
 {
 	//Count rows of data read to avoid header
 	int totalRows = 0;
@@ -54,7 +54,7 @@ bool FileInput::loadFile(LinkedList<Eclipse>& eclipseList, string file, int mode
 				if(rawData.length() > 0)
 				{
 					//Add data from this row to the array
-					processRow(rawData, eclipseList, totalRows - 9, mode);
+					processRow(rawData, eclipseTree, totalRows - 9, mode);
 				}
 			}
 			else
@@ -79,7 +79,7 @@ bool FileInput::loadFile(LinkedList<Eclipse>& eclipseList, string file, int mode
 	return true;
 }
 
-void FileInput::processRow(string rawData, LinkedList<Eclipse>& eclipseList, int row, int mode)
+void FileInput::processRow(string rawData, AVLTree<Eclipse>& eclipseTree, int row, int mode)
 {
 	string cell = "";
 	char lastChar = ' ';
@@ -195,20 +195,27 @@ void FileInput::processRow(string rawData, LinkedList<Eclipse>& eclipseList, int
 			eclipseData.addCell(eighteen, 17);
 		}
 
-		if(mode == 0 && eclipseList.doesValueExist(eclipseData))
-		{
-			cerr << "Error in data row " << row << ": Duplicate catalog number " << eclipseData.getCatalogNum() << "." << endl;
-		}
-
 		if(mode == 0)
 		{
-			//Add the processed eclipse to the list
-			eclipseList.add(eclipseData);
+			try{
+				Eclipse e = eclipseTree.search(eclipseData.getCell(0).getIntValue());
+				cerr << "Error in data row " << row << ": Duplicate catalog number " << eclipseData.getCatalogNum() << "." << endl;
+			}
+			catch(...)
+			{
+
+			}
+
+			//Add the processed eclipse to the tree
+			eclipseTree.insert(eclipseData, eclipseData.getCell(0).getIntValue());
 			this->validElementsRead++;
 		}
 		else if(mode == 1)
 		{
-			if(!eclipseList.remove(eclipseData))
+			try{
+				eclipseTree.remove(eclipseData.getCell(0).getIntValue());
+			}
+			catch(const char* message)
 			{
 				cerr << "Catalog number " << eclipseData.getCatalogNum() << " was not found in the list.\n";
 			}

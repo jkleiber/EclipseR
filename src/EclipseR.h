@@ -15,6 +15,7 @@
 #include "ResizableArray.h"
 #include "LinkedList.h"
 #include "LinkedHashTable.h"
+#include "AVLTree.h"
 #include "EclipseOperations.h"
 
 /**
@@ -22,14 +23,14 @@
  * @param eclipseDataArray The data array to construct
  * @param fileInput The file input helper object
  */
-void dataInputLoop(LinkedList<Eclipse>& eclipseDataArray, FileInput& fileInput);
+void dataInputLoop(AVLTree<Eclipse>& eclipseTree, FileInput& fileInput);
 
 /**
  * Loop that runs while the user manipulates data
  * @param eclipseDataArray the data array to manipulate
  * @param fileInput the file input helper object
  */
-void dataManipLoop(LinkedList<Eclipse>& eclipseDataArray, FileInput& fileInput);
+void dataManipLoop(AVLTree<Eclipse>& eclipseTree, FileInput& fileInput);
 
 /**
  * Main function where the program runs and calls helper functions

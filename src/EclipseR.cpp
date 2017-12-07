@@ -23,19 +23,19 @@ int main()
 	//UnitTests unitTest;
 
 	//Create the linked list of Eclipse objects
-	LinkedList<Eclipse> eclipseList;
+	AVLTree<Eclipse> eclipseTree;
 
 	//Create a FileInput object that will take care of all data input
 	FileInput fileInput;
 
 	//Load the data that the user wants
-	dataInputLoop(eclipseList, fileInput);
+	dataInputLoop(eclipseTree, fileInput);
 
 	//If the user actually gave us files with data, then continue, else exit.
-	if(eclipseList.getSize() > 0)
+	if(eclipseTree.getSize() > 0)
 	{
 		//Manipulate the data however the user wants until the program ends.
-		dataManipLoop(eclipseList, fileInput);
+		dataManipLoop(eclipseTree, fileInput);
 	}
 
 	cout << "Thanks for using EclipseR!\n";
@@ -43,7 +43,7 @@ int main()
 	return 0;
 }
 
-void dataInputLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
+void dataInputLoop(AVLTree<Eclipse>& eclipseTree, FileInput& fileInput)
 {
 	//File name to load
 	string filename = " ";
@@ -60,7 +60,7 @@ void dataInputLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 		//If the file name is legitimate, load the file
 		if(filename != "")
 		{
-			result = fileInput.loadFile(eclipseList, filename);
+			result = fileInput.loadFile(eclipseTree, filename);
 		}
 		else
 		{
@@ -69,7 +69,7 @@ void dataInputLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 	}
 }
 
-void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
+void dataManipLoop(AVLTree<Eclipse>& eclipseTree, FileInput& fileInput)
 {
 	//Create a data operations object for searching and sorting
 	EclipseOperations dataOps;
@@ -85,11 +85,11 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 	ResizableArray<Eclipse> eclipseArray;
 
 	//Load Linked List data into array
-	eclipseArray = eclipseList.buildArray();
+	eclipseArray = eclipseTree.buildArray();
 
 	//Create a linked Hash table for fast lookup of eclipses by catalog number
 	//Aim for a load factor of 0.7
-	LinkedHashTable<Eclipse> eclipseHashTable(10*eclipseList.getSize()/7);
+	LinkedHashTable<Eclipse> eclipseHashTable(10*eclipseTree.getSize()/7);
 
 	//Load the data into the hash table
 	for(int ii = 0; ii < eclipseArray.getNumElements(); ++ii)
@@ -101,7 +101,7 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 	while(userInput != "Q")
 	{
 		//Ask for user input
-		cout << "(O)utput, (S)ort, (F)ind, (M)erge, (P)urge, (C)atalog Order, (L)inked Display, (H)ash Display or (Q)uit?\n";
+		cout << "(O)utput, (S)ort, (F)ind, (M)erge, (P)urge, (C)atalog Order, (L)inked, (H)ash, P(R)e Order, Pos(T) Order, or (Q)uit?\n";
 		getline(cin, userInput);
 
 		//If the user wants to output the list:
@@ -303,20 +303,20 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 				//If the file name is legitimate, load the file
 				if(filename != "")
 				{
-					fileLoadResult = fileInput.loadFile(eclipseList, filename);
+					fileLoadResult = fileInput.loadFile(eclipseTree, filename);
 				}
 
 				//Only update the array if needed (if the file is not available, no need to reload)
 				if(fileLoadResult)
 				{
 					//Rebuild the array
-					eclipseArray = eclipseList.buildArray();
+					eclipseArray = eclipseTree.buildArray();
 
 					//Clear the hash table to restart
 					eclipseHashTable.clearTable();
 
 					//Resize the table to account for new values
-					eclipseHashTable.resize(10*eclipseList.getSize()/7);
+					eclipseHashTable.resize(10*eclipseTree.getSize()/7);
 
 					//Load the data into the hash table
 					for(int ii = 0; ii < eclipseArray.getNumElements(); ++ii)
@@ -339,19 +339,19 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 			//If the file name is legitimate, load the file
 			if(filename != "")
 			{
-				fileLoadResult = fileInput.loadFile(eclipseList, filename, 1);
+				fileLoadResult = fileInput.loadFile(eclipseTree, filename, 1);
 			}
 
 			//Only update the array if needed (if the file is not available, no need to reload)
 			if(fileLoadResult)
 			{
-				eclipseArray = eclipseList.buildArray();
+				eclipseArray = eclipseTree.buildArray();
 
 				//Clear the hash table to restart
 				eclipseHashTable.clearTable();
 
 				//Resize the table to account for new values
-				eclipseHashTable.resize(10*eclipseList.getSize()/7);
+				eclipseHashTable.resize(10*eclipseTree.getSize()/7);
 
 				//Load the data into the hash table
 				for(int ii = 0; ii < eclipseArray.getNumElements(); ++ii)
@@ -398,22 +398,22 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 			if(usingStdout)
 			{
 				cout << fileInput.getHeader() << endl;
-				cout << eclipseList;
+				cout << eclipseTree;
 				cout << endl;
 				cout << "Data lines read: " << fileInput.getTotal();
 				cout << "; Valid eclipses read: " << fileInput.getNumValid();
-				cout << "; Eclipses in memory: " << eclipseList.getSize();
+				cout << "; Eclipses in memory: " << eclipseTree.getSize();
 				cout << endl;
 			}
 			else //Output to file instead
 			{
 				outputFile << fileInput.getHeader();
 				outputFile << endl;
-				outputFile << eclipseList;
+				outputFile << eclipseTree;
 				outputFile << endl;
 				outputFile << "Data lines read: " << fileInput.getTotal();
 				outputFile << "; Valid eclipses read: " << fileInput.getNumValid();
-				outputFile << "; Eclipses in memory: " << eclipseList.getSize();
+				outputFile << "; Eclipses in memory: " << eclipseTree.getSize();
 				outputFile << endl;
 			}
 		}
@@ -428,6 +428,16 @@ void dataManipLoop(LinkedList<Eclipse>& eclipseList, FileInput& fileInput)
 		{
 			//Output the hash table to standard output
 			cout << eclipseHashTable;
+			cout << endl;
+		}
+		else if(userInput == "R")
+		{
+			eclipseTree.printPreOrder();
+			cout << endl;
+		}
+		else if(userInput == "T")
+		{
+			eclipseTree.printPostOrder();
 			cout << endl;
 		}
 		//If the user wants out, leave the loop and exit the program

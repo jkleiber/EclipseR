@@ -11,7 +11,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "LinkedList.h"
+#include "AVLTree.h"
 
 #include "Cell.h"
 #include "Eclipse.h"
@@ -21,24 +21,20 @@
  */
 class FileInput {
 	public:
-		/**
+
+	/**
 		 * Construct the FileInput object
 		 */
 		FileInput();
 
 		/**
-		 * Load a file into the eclipse array
-		 * @param eclipseDataArray The array
-		 * @param file The file to load
-		 */
-		/**
-		 * Alter the eclipse list based on file input
-		 * @param eclipseList the list
+		 * Alter the eclipse tree based on file input
+		 * @param eclipseList the tree
 		 * @param file the file
 		 * @param mode 0 if adding data, 1 if removing data
 		 * @return true if success, false if fail
 		 */
-		bool loadFile(LinkedList<Eclipse>& eclipseList, std::string file, int mode=0);
+		bool loadFile(AVLTree<Eclipse>& eclipseList, std::string file, int mode=0);
 
 		/**
 		 * Gets the number of valid eclipses read
@@ -124,7 +120,7 @@ class FileInput {
 		 * @param eclipseDataArray Array of all eclipses
 		 * @param row the current row of the file we are on
 		 */
-		void processRow(std::string rawData, LinkedList<Eclipse> & eclipseList, int row, int mode);
+		void processRow(std::string rawData, AVLTree<Eclipse> & eclipseTree, int row, int mode);
 
 		/**
 		 * Checks to see if an eclipse's catalog number is unique
@@ -132,7 +128,7 @@ class FileInput {
 		 * @param index The index of the eclipse to consider for uniqueness
 		 * @return -1 if the catalog number is unique, the index of the duplicate if it is repeated
 		 */
-		int isNumberUnique(LinkedList<Eclipse> eclipseList, Eclipse eclipse);
+		int isNumberUnique(AVLTree<Eclipse> eclipseTree, Eclipse eclipse);
 
 		/**
 		 * Checks to see if a character is a number or not

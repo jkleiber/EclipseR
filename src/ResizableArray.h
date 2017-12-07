@@ -242,6 +242,10 @@ class ResizableArray {
 		 */
 		void resize(int newSize)
 		{
+			if(newSize == 0)
+			{
+				newSize = 10;
+			}
 			this->allocateMemory(newSize);
 		}
 
@@ -280,16 +284,25 @@ class ResizableArray {
 		 */
 		void allocateMemory(int newSize)
 		{
+			std::cout << newSize << std::endl;
+			//Set newSize to 10 if the user has cleared all data
+			bool isZero = newSize == 0;
+			newSize = isZero ? 10 : newSize;
+
 			//Allocate a new array for the new size
-			T *newArray = new T[newSize]();
+			T *newArray = new T[newSize];
 
 			//Figure out what length of the array should be copied
 			int len = newSize < this->numElements ? newSize : this->numElements;
 
-			//Copy elements from the old array to the new array
-			for(int i = 0; i < len; ++i)
+			//If the user has cleared out the data, we don't copy it over
+			if(!isZero)
 			{
-				newArray[i] = this->resizableArray[i];
+				//Copy elements from the old array to the new array
+				for(int i = 0; i < len; ++i)
+				{
+					newArray[i] = this->resizableArray[i];
+				}
 			}
 
 			//Place the old array in a trash pointer
